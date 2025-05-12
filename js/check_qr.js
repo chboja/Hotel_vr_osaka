@@ -9,21 +9,14 @@ document.addEventListener("DOMContentLoaded", () => {
     html5QrCode.stop().catch(err => console.error("Failed to stop scanner:", err)); // スキャン後停止
   }
 
-  Html5Qrcode.getCameras().then(devices => {
-    if (devices && devices.length) {
-      const backCamera = devices.find(device => device.label.toLowerCase().includes('back')) || devices[devices.length - 1];
-      const cameraId = backCamera.id;
-      document.getElementById(qrRegionId).innerHTML = "";
-      html5QrCode.start(
-        { deviceId: { exact: cameraId } },
-        {
-          fps: 10,
-          qrbox: { width: 250, height: 250 }
-        }, onScanSuccess);
-    } else {
-      qrResult.value = "カメラが見つかりませんでした。";
-    }
-  }).catch(err => {
+  html5QrCode.start(
+    { facingMode: { exact: "environment" } },
+    {
+      fps: 10,
+      qrbox: { width: 250, height: 250 }
+    },
+    onScanSuccess
+  ).catch(err => {
     console.error("Camera initialization error:", err);
     qrResult.value = "カメラの初期化に失敗しました。";
   });
