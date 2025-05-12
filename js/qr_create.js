@@ -1,5 +1,5 @@
 // Include WanaKana for romaji to katakana conversion
-const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbw5_9dHqIJZ5e6CTLlW_TXgHdYe-DeflS7UrQsMGU0akH-TQDrT4WbsYChwGw9JM-EOFA/exec';
+const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbyVG_pX_EXH9Oy5Sat91XfWtcalLUpTYZR6dtbpLh7ilN2pT43j0O8ImDhHhhvvZTBOSQ/exec';
 const wanakanaScript = document.createElement("script");
 wanakanaScript.src = "https://unpkg.com/wanakana";
 document.head.appendChild(wanakanaScript);
@@ -332,19 +332,17 @@ document.addEventListener("DOMContentLoaded", () => {
             const SHEET_API_URL = getSheetApiUrl();
             const uploadTimestamp = new Date().toISOString();
 
-            // Split compacted data into chunks
+            // --- 1. Clear sheet before uploading chunks ---
+            const clearScript = document.createElement("script");
+            clearScript.src = `${SHEET_API_URL}?callback=handleJsonpResponse&clearOnly=true&timestamp=${encodeURIComponent(uploadTimestamp)}`;
+            document.body.appendChild(clearScript);
+
+            // --- 2. Upload chunks ---
             for (let i = 0; i < compacted.length; i += CHUNK_SIZE) {
               const chunk = compacted.slice(i, i + CHUNK_SIZE);
               const csvChunk = chunk.map(row => row.join(',')).join(';');
-
-              const isFirst = i === 0;
-              const isLast = i + CHUNK_SIZE >= compacted.length;
-
               const script = document.createElement("script");
-              script.src = `${SHEET_API_URL}?callback=handleJsonpResponse&csv=${encodeURIComponent(csvChunk)}`
-                + (isFirst ? "&clear=true" : "")
-                + `&timestamp=${encodeURIComponent(uploadTimestamp)}`;
-
+              script.src = `${SHEET_API_URL}?callback=handleJsonpResponse&csv=${encodeURIComponent(csvChunk)}&timestamp=${encodeURIComponent(uploadTimestamp)}`;
               document.body.appendChild(script);
             }
           }
