@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // ✅ 서버에 예약번호와 해쉬값 검증 요청
       try {
-        const scriptUrl = "https://script.google.com/macros/s/AKfycbxlk6w8dPpztsopBPT6GqiEbNGz2ao9JTZyvXKArcDsX6lE2rA8Y-xifJ1bWddGxPfTIw/exec";
+        const scriptUrl = "https://script.google.com/macros/s/AKfycbwA2aC0mCvTq9FTwXaM1G72Gqs1G7yM5XF21tcd0ZMk6x_wv08htWC_sPV_RB48BHgcrQ/exec";
         const verifyUrl = `${scriptUrl}?callback=handleVerifyResponse&verifyReservation=${encodeURIComponent(reservation)}&hashcode=${encodeURIComponent(hashFromQR)}`;
 
         const script = document.createElement("script");
@@ -97,7 +97,13 @@ window.handleVerifyResponse = function(response) {
   if (!response.success) {
     alert("❌ QRコードの確認中にエラーが発生しました。");
   } else if (response.match === true) {
-    alert("✅ QRコードがデータベースと一致しました。");
+    if (response.breakfastFlag === 0) {
+      alert("Room Onlyの部屋です。");
+    } else if (response.breakfastFlag === 1) {
+      alert("朝食付き部屋です。");
+    } else {
+      alert("✅ QRコードがデータベースと一致しました。");
+    }
   } else {
     alert("❌ データベースの情報と一致しません。");
   }

@@ -1,5 +1,5 @@
 // Include WanaKana for romaji to katakana conversion
-const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbxlk6w8dPpztsopBPT6GqiEbNGz2ao9JTZyvXKArcDsX6lE2rA8Y-xifJ1bWddGxPfTIw/exec';
+const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbwA2aC0mCvTq9FTwXaM1G72Gqs1G7yM5XF21tcd0ZMk6x_wv08htWC_sPV_RB48BHgcrQ/exec';
 const wanakanaScript = document.createElement("script");
 wanakanaScript.src = "https://unpkg.com/wanakana";
 document.head.appendChild(wanakanaScript);
@@ -254,7 +254,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // ✅ 텍스트 정보 표시
       const textInfo = `Room : ${room}<br>Check-in : ${checkIn}<br>Check-out : ${checkOut}(~10:00)<br>Guests : ${guests}<br>Breakfast : ${breakfast}<br>Booking No : ${reservation}`;
-      document.getElementById("qrTextInfo").innerHTML = textInfo;
+      const qrTextInfo = document.getElementById("qrTextInfo");
+      qrTextInfo.innerHTML = textInfo;
+      qrTextInfo.style.marginTop = "30px"; // Apply visual gap below button
 
       // ✅ QR 코드 생성 (작게)
       const qrResult = document.getElementById("qrResult");
@@ -335,7 +337,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 const checkOutRaw = row["check_out"]?.trim() || row["C/O"]?.trim() || "";
                 const formatDate = (raw) => {
                   const dateObj = new Date(raw);
-                  return isNaN(dateObj) ? "" : dateObj.toISOString().slice(0, 10);
+                  if (isNaN(dateObj)) return "";
+                  const yyyy = dateObj.getFullYear();
+                  const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+                  const dd = String(dateObj.getDate()).padStart(2, "0");
+                  return `${yyyy}-${mm}-${dd}`;
                 };
                 const checkIn = formatDate(checkInRaw);
                 const checkOut = formatDate(checkOutRaw);
