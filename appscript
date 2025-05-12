@@ -90,10 +90,8 @@ function doGet(e) {
           sheet.getRange(2, 1, lastRow - 1, 9).clearContent();
         }
       }
-      // 덮어쓰기: 2행부터 순차적으로 입력
-      rows.forEach((row, i) => {
-        sheet.getRange(i + 2, 1, 1, 9).setValues([row]);
-      });
+      // 덮어쓰기: 2행부터 한 번에 입력 (속도 개선)
+      sheet.getRange(2, 1, rows.length, 9).setValues(rows);
     } else {
       // append=true가 있을 경우 appendRow 사용
       rows.forEach(row => sheet.appendRow(row));
