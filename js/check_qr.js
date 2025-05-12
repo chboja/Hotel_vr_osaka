@@ -61,6 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const verifyUrl = `${scriptUrl}?callback=handleVerifyResponse&verifyReservation=${encodeURIComponent(reservation)}&verifyHash=${encodeURIComponent(hashFromQR)}`;
 
           const script = document.createElement("script");
+          console.log(verifyUrl);
           script.src = verifyUrl;
           document.body.appendChild(script);
         } catch (err) {
