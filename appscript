@@ -62,6 +62,22 @@ function doGet(e) {
     }
   }
 
+  if (e.parameter.verifyReservation && e.parameter.hashcode) {
+    const reservationToVerify = e.parameter.verifyReservation.trim();
+    const hashToVerify = e.parameter.hashcode.trim();
+    const sheet = SpreadsheetApp.openById("1p1tktgK4vo9Yyc_dC1NB5WL-m2HNS_R6vYZAWWJSMXQ").getSheetByName("guest_list");
+    if (!sheet) throw new Error("guest_list not found");
+
+    const data = sheet.getDataRange().getValues();
+    const match = data.find((row, index) => index !== 0 && String(row[0]).trim() === reservationToVerify);
+    const storedHash = match ? String(match[8]).trim() : null;
+
+    const isValid = storedHash === hashToVerify;
+    return ContentService
+      .createTextOutput(`${e.parameter.callback}(${JSON.stringify({ success: true, isValid })})`)
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+
   const callback = e.parameter.callback;
   const csvData = e.parameter.csv;
 

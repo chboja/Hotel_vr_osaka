@@ -55,9 +55,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (calculatedHash === hashFromQR) {
         alert("✅ QRコードが確認されました。");
+        // ✅ 서버에 예약번호와 해쉬값 검증 요청
+        try {
+          const scriptUrl = "https://script.google.com/macros/s/AKfycbzLco53yA9DunIBU4VcyrCYzulUUn8UNAzEtTY0-PGrwGVwiTmfVz_bmuKcq9kMBlIW4A/exec";
+          const verifyUrl = `${scriptUrl}?callback=handleVerifyResponse&verifyReservation=${encodeURIComponent(reservation)}&verifyHash=${encodeURIComponent(hashFromQR)}`;
+
+          const script = document.createElement("script");
+          script.src = verifyUrl;
+          document.body.appendChild(script);
+        } catch (err) {
+          console.error("Verification request failed:", err);
+          alert("サーバーとの確認中にエラーが発生しました。");
+        }
       } else {
         alert("❌ QRコードが不正です。");
       }
     });
   }
 });
+
+window.handleVerifyResponse = function(response) {
+  if (!response.success) {
+    alert("❌ QRコードの確認中にエラーが発生しました。");
+  } else if (response.match === true) {
+    alert("✅ QRコードがデータベースと一致しました。");
+  } else {
+    alert("❌ データベースの情報と一致しません。");
+  }
+};
