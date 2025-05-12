@@ -181,13 +181,21 @@ window.handleVerifyResponse = function(response) {
   if (response.isValid) {
     // 朝食フラグで分岐
     if (response.breakfastFlag === 1) {
-      alert("✅ QRコードが確認されました。");
+      // alert("✅ QRコードが確認されました。");
 
       // ✅ 朝食人数入力テーブルを表示
       const start = new Date(response.checkIn);
       const end = new Date(response.checkOut);
       const container = document.getElementById("breakfastCheckTable");
-      container.innerHTML = ""; // 기존 테이블 초기화
+      if (!container) {
+        console.error("❌ breakfastCheckTable element not found.");
+        // fallback message or log
+        console.log("⚠️ breakfastCheckTable が見つかりません。テーブルを表示できません。");
+        return;
+      }
+      // Log the container before clearing
+      console.log("📋 表示エリア要素:", container);
+      container.innerHTML = ""; // 기존 테ーブル 초기화
 
       const tableTitle = document.createElement("h3");
       tableTitle.textContent = "朝食チェック表";
