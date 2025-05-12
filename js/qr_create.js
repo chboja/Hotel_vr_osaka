@@ -1,5 +1,5 @@
 // Include WanaKana for romaji to katakana conversion
-const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbwwtU-0ALrN8shCBtdJF-WIErep9crc6XdBap79fRpw3k2yLX611c3sJvvIqyZ23CdN5w/exec';
+const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbx47EgT_4uDm2Uhh5tmEPpkNGXwHltMIFj_HYt95e1PbWq1fRww57mGj-LwJrQ-TA6hlA/exec';
 const wanakanaScript = document.createElement("script");
 wanakanaScript.src = "https://unpkg.com/wanakana";
 document.head.appendChild(wanakanaScript);
@@ -323,14 +323,24 @@ document.addEventListener("DOMContentLoaded", () => {
               }));
 
             console.log("📊 JSONP 전送用 문자열 배열 (with searchName):", compacted);
-            const CHUNK_SIZE = 30; // 데이터 분할 크기
+            const CHUNK_SIZE = 30;
             const SHEET_API_URL = getSheetApiUrl();
 
-            // Combine all rows into one CSV string, separated by semicolons
-            const allCsvLines = compacted.map(row => row.join(',')).join(';');
-            const script = document.createElement("script");
-            script.src = `${SHEET_API_URL}?callback=handleJsonpResponse&csv=${encodeURIComponent(allCsvLines)}&clear=true`;
-            document.body.appendChild(script);
+            // Split compacted data into chunks
+            for (let i = 0; i < compacted.length; i += CHUNK_SIZE) {
+              const chunk = compacted.slice(i, i + CHUNK_SIZE);
+              const csvChunk = chunk.map(row => row.join(',')).join(';');
+
+              const isFirst = i === 0;
+              const isLast = i + CHUNK_SIZE >= compacted.length;
+
+              const script = document.createElement("script");
+              script.src = `${SHEET_API_URL}?callback=handleJsonpResponse&csv=${encodeURIComponent(csvChunk)}`
+                + (isFirst ? "&clear=true" : "")
+                + (isLast ? "&finish=true" : "");
+
+              document.body.appendChild(script);
+            }
           }
         });
       };

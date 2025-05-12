@@ -1,4 +1,5 @@
 function doGet(e) {
+  const cache = CacheService.getScriptCache();
   const searchName = e.parameter.name;
   const searchRoom = e.parameter.room;
   if (searchName) {
@@ -80,21 +81,26 @@ function doGet(e) {
     const sheet = SpreadsheetApp.openById("1p1tktgK4vo9Yyc_dC1NB5WL-m2HNS_R6vYZAWWJSMXQ").getSheetByName("guest_list");
     if (!sheet) throw new Error("guest_list not found");
 
-    const appendMode = e.parameter.append === "true";
+    if (e.parameter.clear === "true") {
+      cache.remove("csv_accumulated_data");
+    }
 
-    if (!appendMode) {
-      // 덮어쓰기 모드: clear 파라미터에 따라 삭제하고, overwrite
+    const cacheKey = "csv_accumulated_data";
+    const cached = cache.get(cacheKey);
+    const existing = cached ? JSON.parse(cached) : [];
+
+    const combined = existing.concat(rows);
+    cache.put(cacheKey, JSON.stringify(combined), 300); // keep for 5 minutes
+
+    if (e.parameter.finish === "true") {
       if (e.parameter.clear === "true") {
         const lastRow = sheet.getLastRow();
         if (lastRow > 1) {
           sheet.getRange(2, 1, lastRow - 1, 9).clearContent();
         }
       }
-      // 덮어쓰기: 2행부터 한 번에 입력 (속도 개선)
-      sheet.getRange(2, 1, rows.length, 9).setValues(rows);
-    } else {
-      // append=true가 있을 경우 appendRow 사용
-      rows.forEach(row => sheet.appendRow(row));
+      sheet.getRange(2, 1, combined.length, 9).setValues(combined);
+      cache.remove(cacheKey);
     }
 
     return ContentService
