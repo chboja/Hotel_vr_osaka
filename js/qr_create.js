@@ -1,5 +1,5 @@
 // Include WanaKana for romaji to katakana conversion
-const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbzXdDlfKIzg61u-aNElIiDl74SJU-oF_x6E_-fDf7cOQZOnEX7Ku8XbOMq5RvLQstPo-g/exec';
+const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbxqRooj398Uyu97FFbXrfpgkl2kI5cu1eEchexlZgT_XrIUQAXoJQ6nms83BZWUyPxnLQ/exec';
 const wanakanaScript = document.createElement("script");
 wanakanaScript.src = "https://unpkg.com/wanakana";
 document.head.appendChild(wanakanaScript);
@@ -332,12 +332,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const SHEET_API_URL = getSheetApiUrl();
             const uploadTimestamp = new Date().toISOString();
 
-            // --- 1. Clear sheet before uploading chunks ---
-            const clearScript = document.createElement("script");
-            clearScript.src = `${SHEET_API_URL}?callback=clearResponseHandler&clearOnly=true&timestamp=${encodeURIComponent(uploadTimestamp)}`;
-            document.body.appendChild(clearScript);
+            // --- 1. Clear sheet before uploading chunks (command-based) ---
+            const commandScript = document.createElement("script");
+            commandScript.src = `${SHEET_API_URL}?callback=handleCommandResponse&command=clear&timestamp=${encodeURIComponent(uploadTimestamp)}`;
+            document.body.appendChild(commandScript);
 
-            window.clearResponseHandler = function(response) {
+            window.handleCommandResponse = function(response) {
               if (response.success && response.cleared) {
                 const chunks = [];
                 for (let i = 0; i < compacted.length; i += CHUNK_SIZE) {
@@ -345,7 +345,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 uploadCsvChunksSequentially(chunks, 0, uploadTimestamp, SHEET_API_URL);
               } else {
-                console.error("❌ clearOnly 실패", response);
+                console.error("❌ clear command 실패", response);
               }
             };
           }
