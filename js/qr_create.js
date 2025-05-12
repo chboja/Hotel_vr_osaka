@@ -333,8 +333,8 @@ document.addEventListener("DOMContentLoaded", () => {
               const csvLines = chunk.map(row => row.join(',')).join(';');
 
               const script = document.createElement("script");
-              const isFirstChunk = index === 0;
-              const clearParam = isFirstChunk ? "&clear=true" : "";
+              // Send clear=true for first chunk, append=true for others
+              const clearParam = index === 0 ? "&clear=true" : "&append=true";
               script.src = `${SHEET_API_URL}?callback=handleJsonpResponse&csv=${encodeURIComponent(csvLines)}${clearParam}`;
 
               setTimeout(() => {
