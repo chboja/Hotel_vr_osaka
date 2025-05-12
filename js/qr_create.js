@@ -256,8 +256,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const textInfo = `Room : ${room}<br>Check-in : ${checkIn}<br>Check-out : ${checkOut}(~10:00)<br>Guests : ${guests}<br>Breakfast : ${breakfast}<br>Booking No : ${reservation}`;
       const qrTextInfo = document.getElementById("qrTextInfo");
       qrTextInfo.innerHTML = textInfo;
-      qrTextInfo.style.marginTop = "80px"; // Apply visual gap below button
-      qrTextInfo.style.fontSize = "14px";
+      qrTextInfo.style.marginTop = "100px"; // Apply visual gap below button
+      qrTextInfo.style.fontSize = "12px";
 
       // ✅ QR 코드 생성 (작게)
       const qrResult = document.getElementById("qrResult");
