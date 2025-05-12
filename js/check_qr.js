@@ -80,6 +80,62 @@ window.handleVerifyResponse = function(response) {
     alert("❌ QRコードの確認中にエラーが発生しました。");
   } else if (response.match === true) {
     alert("✅ QRコードがデータベースと一致しました。");
+    // ✅ 朝食人数入力テーブルを表示
+    const start = new Date(response.checkIn);
+    const end = new Date(response.checkOut);
+    const container = document.getElementById("breakfastCheckTable");
+    if (!container) {
+      console.error("❌ breakfastCheckTable element not found.");
+      return;
+    }
+    container.innerHTML = ""; // 기존 테이블 초기화
+
+    const tableTitle = document.createElement("h3");
+    tableTitle.textContent = "朝食チェック表";
+
+    const table = document.createElement("table");
+    table.style.width = "100%";
+    table.style.borderCollapse = "collapse";
+
+    const header = table.insertRow();
+    header.innerHTML = "<th>日付</th><th>人数</th>";
+    header.querySelectorAll("th").forEach(th => {
+      th.style.borderBottom = "1px solid #ccc";
+      th.style.padding = "8px";
+      th.style.textAlign = "left";
+    });
+
+    const days = [];
+    let current = new Date(start);
+    current.setDate(current.getDate() + 1); // 체크인 다음날부터 시작
+    while (current <= end) {
+      days.push(new Date(current));
+      current.setDate(current.getDate() + 1);
+    }
+
+    days.forEach(date => {
+      const row = table.insertRow();
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      const dateString = `${yyyy}-${mm}-${dd}`;
+
+      const dateCell = row.insertCell();
+      dateCell.textContent = dateString;
+      dateCell.style.padding = "8px";
+
+      const inputCell = row.insertCell();
+      const input = document.createElement("input");
+      input.type = "number";
+      input.min = "0";
+      input.value = "0";
+      input.style.width = "60px";
+      inputCell.appendChild(input);
+      inputCell.style.padding = "8px";
+    });
+
+    container.appendChild(tableTitle);
+    container.appendChild(table);
   } else {
     alert("❌ データベースの情報と一致しません。");
   }
