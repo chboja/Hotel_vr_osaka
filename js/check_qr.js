@@ -97,9 +97,10 @@ window.handleVerifyResponse = function(response) {
   if (!response.success) {
     alert("❌ QRコードの確認中にエラーが発生しました。");
   } else if (response.match === true) {
-    if (response.breakfastFlag === 0) {
+    const breakfastFlag = Number(response.breakfastFlag);
+    if (breakfastFlag === 0) {
       alert("Room Onlyの部屋です。");
-    } else if (response.breakfastFlag === 1) {
+    } else if (breakfastFlag === 1) {
       alert("朝食付き部屋です。");
     } else {
       alert("✅ QRコードがデータベースと一致しました。");
