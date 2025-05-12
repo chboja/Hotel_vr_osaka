@@ -1,5 +1,5 @@
 // Include WanaKana for romaji to katakana conversion
-const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbzR6TJMZ30C5Dk7on3j3QRD9iTplRgWvziR_wPn3kcz5bNGLeNnKr7FJRdjCEddPym5zQ/exec';
+const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbwjZ5RuiFIHHVW2MAOgN6wuBBFidbCQ5nzKcRXszUpvw9euI-XfjkmZJ_VXNZw-dHVRNg/exec';
 const wanakanaScript = document.createElement("script");
 wanakanaScript.src = "https://unpkg.com/wanakana";
 document.head.appendChild(wanakanaScript);
@@ -164,6 +164,10 @@ window.handleSearchResult = function(response) {
 // JSONP callback for upload responses
 window.handleJsonpResponse = function(response) {
   console.log("📥 アップロード結果:", response);
+  if (response.debug) {
+    console.log("📊 combined:", response.debug.combined);
+    console.log("📊 expected:", response.debug.expected);
+  }
   // You can handle post-upload feedback here if needed
 };
 
