@@ -72,9 +72,9 @@ function doGet(e) {
     const match = data.find((row, index) => index !== 0 && String(row[0]).trim() === reservationToVerify);
     const storedHash = match ? String(match[8]).trim() : null;
 
-    const isValid = storedHash === hashToVerify;
+    const isMatch = storedHash === hashToVerify;
     return ContentService
-      .createTextOutput(`${e.parameter.callback}(${JSON.stringify({ success: true, isValid })})`)
+      .createTextOutput(`${e.parameter.callback}(${JSON.stringify({ success: true, match: isMatch })})`)
       .setMimeType(ContentService.MimeType.JAVASCRIPT);
   }
 
