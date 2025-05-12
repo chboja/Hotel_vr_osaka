@@ -11,13 +11,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   Html5Qrcode.getCameras().then(devices => {
     if (devices && devices.length) {
-      const backCamera = devices.find(device => /back|rear/i.test(device.label)) || devices[0];
+      const backCamera = devices.find(device => device.label.toLowerCase().includes('back')) || devices[devices.length - 1];
       const cameraId = backCamera.id;
       document.getElementById(qrRegionId).innerHTML = "";
-      html5QrCode.start(cameraId, {
-        fps: 10,
-        qrbox: { width: 250, height: 250 }
-      }, onScanSuccess);
+      html5QrCode.start(
+        { deviceId: { exact: cameraId } },
+        {
+          fps: 10,
+          qrbox: { width: 250, height: 250 }
+        }, onScanSuccess);
     } else {
       qrResult.value = "カメラが見つかりませんでした。";
     }
