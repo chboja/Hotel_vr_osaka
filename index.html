@@ -1,12 +1,47 @@
 <!-- index.html -->
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=qr_create.html" />
-    <title>Redirecting...</title>
-  </head>
-  <body>
-    QR朝食券ページへ移動中...
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR朝食管理メニュー</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 40px;
+      background: #f4f4f4;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+    }
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+    a {
+      text-decoration: none;
+      background-color: #2e86de;
+      color: white;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    a:hover {
+      background-color: #1b4f9c;
+    }
+  </style>
+</head>
+<body>
+  <h1>QR朝食管理メニュー</h1>
+  <div class="menu">
+    <a href="qr_create.html">🎟 QRコード生成</a>
+    <a href="check_qr.html">📷 QRコードチェック</a>
+    <a href="guest_search.html">🔍 ゲスト検索</a>
+  </div>
+</body>
 </html>

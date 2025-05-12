@@ -1,5 +1,4 @@
 function doGet(e) {
-  const cache = CacheService.getScriptCache();
   const searchName = e.parameter.name;
   const searchRoom = e.parameter.room;
   if (searchName) {
@@ -66,46 +65,57 @@ function doGet(e) {
   const callback = e.parameter.callback;
   const csvData = e.parameter.csv;
 
-  if (!csvData || !callback) {
+  if (!callback) {
     return ContentService
-      .createTextOutput(`${callback}(${JSON.stringify({ success: false, error: "Missing csv or callback parameter" })})`)
+      .createTextOutput(`(${JSON.stringify({ success: false, error: "Missing callback parameter" })})`)
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+
+  const command = e.parameter.command;
+  if (command !== "clear" && !csvData) {
+    return ContentService
+      .createTextOutput(`${callback}(${JSON.stringify({ success: false, error: "Missing csv parameter" })})`)
       .setMimeType(ContentService.MimeType.JAVASCRIPT);
   }
 
   try {
+    const sheet = SpreadsheetApp.openById("1p1tktgK4vo9Yyc_dC1NB5WL-m2HNS_R6vYZAWWJSMXQ").getSheetByName("guest_list");
+    if (!sheet) throw new Error("guest_list not found");
+
+    const timestamp = e.parameter.timestamp;
+
+    if (command === "clear") {
+      const timestamp = e.parameter.timestamp;
+      const sheet = SpreadsheetApp.openById("1p1tktgK4vo9Yyc_dC1NB5WL-m2HNS_R6vYZAWWJSMXQ").getSheetByName("guest_list");
+      if (!sheet) throw new Error("guest_list not found");
+
+      const data = sheet.getDataRange().getValues();
+      const filtered = data.filter((row, index) => index === 0 || row[9] === timestamp);
+
+      if (sheet.getLastRow() > 1) {
+        sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn()).clearContent();
+      }
+
+      if (filtered.length > 1 && filtered[0].length > 0) {
+        sheet.getRange(2, 1, filtered.length - 1, filtered[0].length).setValues(filtered.slice(1));
+      }
+
+      return ContentService
+        .createTextOutput(`${e.parameter.callback}(${JSON.stringify({ success: true, cleared: true })})`)
+        .setMimeType(ContentService.MimeType.JAVASCRIPT);
+    }
+
     const rows = csvData.trim().split(';').map(line => {
       const [reservation, room, name, checkIn, checkOut, guestCount, breakfastFlag, searchName, hash] = line.split(',');
       return [reservation, room, name, checkIn, checkOut, guestCount, breakfastFlag, searchName, hash];
     });
 
-    const sheet = SpreadsheetApp.openById("1p1tktgK4vo9Yyc_dC1NB5WL-m2HNS_R6vYZAWWJSMXQ").getSheetByName("guest_list");
-    if (!sheet) throw new Error("guest_list not found");
+    const augmentedRows = rows.map(r => [...r, timestamp]);
 
-    if (e.parameter.clear === "true") {
-      cache.remove("csv_accumulated_data");
-    }
-
-    const cacheKey = "csv_accumulated_data";
-    const expectedCount = Number(e.parameter.expectedCount);
-    const cached = cache.get(cacheKey);
-    const existing = cached ? JSON.parse(cached) : [];
-
-    const combined = existing.concat(rows);
-    cache.put(cacheKey, JSON.stringify(combined), 300); // keep for 5 minutes
-
-    if (!isNaN(expectedCount) && combined.length >= expectedCount) {
-      if (e.parameter.clear === "true") {
-        const lastRow = sheet.getLastRow();
-        if (lastRow > 1) {
-          sheet.getRange(2, 1, lastRow - 1, 9).clearContent();
-        }
-      }
-      sheet.getRange(2, 1, combined.length, 9).setValues(combined);
-      cache.remove(cacheKey);
-    }
+    sheet.getRange(sheet.getLastRow() + 1, 1, augmentedRows.length, augmentedRows[0].length).setValues(augmentedRows);
 
     return ContentService
-      .createTextOutput(`${callback}(${JSON.stringify({ success: true, inserted: rows.length })})`)
+      .createTextOutput(`${callback}(${JSON.stringify({ success: true, inserted: augmentedRows.length })})`)
       .setMimeType(ContentService.MimeType.JAVASCRIPT);
 
   } catch (err) {
