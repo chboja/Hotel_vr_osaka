@@ -1,5 +1,5 @@
 // Include WanaKana for romaji to katakana conversion
-const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbzpJEvJxUxNecq9-MDlcWSrGkx7p532vo1-7cF2BH1NP43WzHIZaAdI7MPrMV_sMthObw/exec';
+const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbw5_9dHqIJZ5e6CTLlW_TXgHdYe-DeflS7UrQsMGU0akH-TQDrT4WbsYChwGw9JM-EOFA/exec';
 const wanakanaScript = document.createElement("script");
 wanakanaScript.src = "https://unpkg.com/wanakana";
 document.head.appendChild(wanakanaScript);
