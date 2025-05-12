@@ -332,14 +332,14 @@ document.addEventListener("DOMContentLoaded", () => {
               const chunk = compacted.slice(index, index + CHUNK_SIZE);
               const csvLines = chunk.map(row => row.join(',')).join(';');
 
+              const script = document.createElement("script");
+              const isFirstChunk = index === 0;
+              const clearParam = isFirstChunk ? "&clear=true" : "";
+              script.src = `${SHEET_API_URL}?callback=handleJsonpResponse&csv=${encodeURIComponent(csvLines)}${clearParam}`;
+
               setTimeout(() => {
-                const script = document.createElement("script");
-                // Only the first chunk includes clear=true
-                const isFirstChunk = index === 0;
-                const clearParam = isFirstChunk ? "&clear=true" : "";
-                script.src = `${SHEET_API_URL}?callback=handleJsonpResponse&csv=${encodeURIComponent(csvLines)}${clearParam}`;
                 document.body.appendChild(script);
-              }, index * 100); // 100ms 간격으로 조절 (필요 시 늘릴 수 있음)
+              }, index * 100); // 간격 조절로 순차적 업로드
             });
           }
         });
