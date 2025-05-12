@@ -1,5 +1,5 @@
 // Include WanaKana for romaji to katakana conversion
-const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbx5bon3agFyff_fio8cGZZ1Fq06yrzM-COAttbOV453fOGofEoEZpdawWeUJaGBU00kJw/exec';
+const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbwwtU-0ALrN8shCBtdJF-WIErep9crc6XdBap79fRpw3k2yLX611c3sJvvIqyZ23CdN5w/exec';
 const wanakanaScript = document.createElement("script");
 wanakanaScript.src = "https://unpkg.com/wanakana";
 document.head.appendChild(wanakanaScript);
@@ -326,21 +326,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const CHUNK_SIZE = 30; // 데이터 분할 크기
             const SHEET_API_URL = getSheetApiUrl();
 
-            compacted.forEach((_, index) => {
-              if (index % CHUNK_SIZE !== 0) return;
-
-              const chunk = compacted.slice(index, index + CHUNK_SIZE);
-              const csvLines = chunk.map(row => row.join(',')).join(';');
-
-              const script = document.createElement("script");
-              // Send clear=true for first chunk, append=true for others
-              const clearParam = index === 0 ? "&clear=true" : "&append=true";
-              script.src = `${SHEET_API_URL}?callback=handleJsonpResponse&csv=${encodeURIComponent(csvLines)}${clearParam}`;
-
-              setTimeout(() => {
-                document.body.appendChild(script);
-              }, index * 100); // 간격 조절로 순차적 업로드
-            });
+            // Combine all rows into one CSV string, separated by semicolons
+            const allCsvLines = compacted.map(row => row.join(',')).join(';');
+            const script = document.createElement("script");
+            script.src = `${SHEET_API_URL}?callback=handleJsonpResponse&csv=${encodeURIComponent(allCsvLines)}&clear=true`;
+            document.body.appendChild(script);
           }
         });
       };
