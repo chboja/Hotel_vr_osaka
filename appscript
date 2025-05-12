@@ -80,10 +80,12 @@ function doGet(e) {
     const sheet = SpreadsheetApp.openById("1p1tktgK4vo9Yyc_dC1NB5WL-m2HNS_R6vYZAWWJSMXQ").getSheetByName("guest_list");
     if (!sheet) throw new Error("guest_list not found");
 
-    // Clear existing data from row 2 onwards
-    const lastRow = sheet.getLastRow();
-    if (lastRow > 1) {
-      sheet.getRange(2, 1, lastRow - 1, 9).clearContent();
+    // Clear only if explicitly requested
+    if (e.parameter.clear === "true") {
+      const lastRow = sheet.getLastRow();
+      if (lastRow > 1) {
+        sheet.getRange(2, 1, lastRow - 1, 9).clearContent();
+      }
     }
 
     // Insert new rows starting from row 2

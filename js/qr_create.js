@@ -1,5 +1,5 @@
 // Include WanaKana for romaji to katakana conversion
-const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbyibwhNVG_RnN-1mNnIH45DEqUasPWxvaOuGwRcrlUtJOXDwXy-HP9dZuUQMVzu8N2ZCQ/exec';
+const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycby60ySbPyze6AY3KmTUsgfRy1t3gDFjOrB2uE9fGoSu69ZXCOwlfrt69wdhv8Joj1PjKw/exec';
 const wanakanaScript = document.createElement("script");
 wanakanaScript.src = "https://unpkg.com/wanakana";
 document.head.appendChild(wanakanaScript);
@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const qrText = `${data},${hash.slice(0, 8)}`;
 
       // ✅ 텍스트 정보 표시
-      const textInfo = `Room: ${room}<br>Check-in: ${checkIn}<br>Check-out: ${checkOut} (~10:00)<br>Guests: ${guests}<br>Breakfast: ${breakfast}<br>Reservation No.: ${reservation}`;
+      const textInfo = `Room : ${room}<br>Check-in : ${checkIn}<br>Check-out : ${checkOut}(~10:00)<br>Guests : ${guests}<br>Breakfast : ${breakfast}<br>Booking No : ${reservation}`;
       document.getElementById("qrTextInfo").innerHTML = textInfo;
 
       // ✅ QR 코드 생성 (작게)
@@ -334,7 +334,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
               setTimeout(() => {
                 const script = document.createElement("script");
-                script.src = `${SHEET_API_URL}?callback=handleJsonpResponse&csv=${encodeURIComponent(csvLines)}`;
+                // Only the first chunk includes clear=true
+                const isFirstChunk = index === 0;
+                const clearParam = isFirstChunk ? "&clear=true" : "";
+                script.src = `${SHEET_API_URL}?callback=handleJsonpResponse&csv=${encodeURIComponent(csvLines)}${clearParam}`;
                 document.body.appendChild(script);
               }, index * 100); // 100ms 간격으로 조절 (필요 시 늘릴 수 있음)
             });
