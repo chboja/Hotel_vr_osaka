@@ -80,17 +80,24 @@ function doGet(e) {
     const sheet = SpreadsheetApp.openById("1p1tktgK4vo9Yyc_dC1NB5WL-m2HNS_R6vYZAWWJSMXQ").getSheetByName("guest_list");
     if (!sheet) throw new Error("guest_list not found");
 
-    // Clear only if explicitly requested
-    if (e.parameter.clear === "true") {
-      const lastRow = sheet.getLastRow();
-      if (lastRow > 1) {
-        sheet.getRange(2, 1, lastRow - 1, 9).clearContent();
-      }
-    }
+    const appendMode = e.parameter.append === "true";
 
-    // Insert new rows starting from row 2
-    const startRow = sheet.getLastRow() + 1;
-    sheet.getRange(startRow, 1, rows.length, 9).setValues(rows);
+    if (!appendMode) {
+      // 덮어쓰기 모드: clear 파라미터에 따라 삭제하고, overwrite
+      if (e.parameter.clear === "true") {
+        const lastRow = sheet.getLastRow();
+        if (lastRow > 1) {
+          sheet.getRange(2, 1, lastRow - 1, 9).clearContent();
+        }
+      }
+      // 덮어쓰기: 2행부터 순차적으로 입력
+      rows.forEach((row, i) => {
+        sheet.getRange(i + 2, 1, 1, 9).setValues([row]);
+      });
+    } else {
+      // append=true가 있을 경우 appendRow 사용
+      rows.forEach(row => sheet.appendRow(row));
+    }
 
     return ContentService
       .createTextOutput(`${callback}(${JSON.stringify({ success: true, inserted: rows.length })})`)
