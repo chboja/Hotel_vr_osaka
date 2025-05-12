@@ -1,0 +1,101 @@
+function doGet(e) {
+  const searchName = e.parameter.name;
+  const searchRoom = e.parameter.room;
+  if (searchName) {
+    try {
+      const sheet = SpreadsheetApp.openById("1p1tktgK4vo9Yyc_dC1NB5WL-m2HNS_R6vYZAWWJSMXQ").getSheetByName("guest_list");
+      if (!sheet) throw new Error("guest_list not found");
+
+      const data = sheet.getDataRange().getValues();
+      const searchKey = searchName.toLowerCase().replace(/\s+/g, '');
+      const matches = data.filter((row, index) => {
+        if (index === 0) return false; // skip header
+        const rowKey = (row[7] || "").toLowerCase().replace(/\s+/g, '');
+        return rowKey.includes(searchKey);
+      }).map(row => ({
+        reservation: row[0],
+        room: row[1],
+        name: row[2],
+        checkIn: row[3],
+        checkOut: row[4],
+        guestCount: row[5],
+        breakfastFlag: row[6]
+      }));
+
+      return ContentService
+        .createTextOutput(`${e.parameter.callback}(${JSON.stringify({ success: true, matches })})`)
+        .setMimeType(ContentService.MimeType.JAVASCRIPT);
+    } catch (err) {
+      return ContentService
+        .createTextOutput(`${e.parameter.callback}(${JSON.stringify({ success: false, error: err.message })})`)
+        .setMimeType(ContentService.MimeType.JAVASCRIPT);
+    }
+  }
+  if (searchRoom) {
+    try {
+      const sheet = SpreadsheetApp.openById("1p1tktgK4vo9Yyc_dC1NB5WL-m2HNS_R6vYZAWWJSMXQ").getSheetByName("guest_list");
+      if (!sheet) throw new Error("guest_list not found");
+
+      const data = sheet.getDataRange().getValues();
+      const searchKey = searchRoom.toLowerCase().replace(/\s+/g, '');
+      const matches = data.filter((row, index) => {
+        if (index === 0) return false; // skip header
+        const rowKey = String(row[1] || "").toLowerCase().replace(/\s+/g, '');
+        return rowKey.includes(searchKey);
+      }).map(row => ({
+        reservation: row[0],
+        room: row[1],
+        name: row[2],
+        checkIn: row[3],
+        checkOut: row[4],
+        guestCount: row[5],
+        breakfastFlag: row[6]
+      }));
+
+      return ContentService
+        .createTextOutput(`${e.parameter.callback}(${JSON.stringify({ success: true, matches })})`)
+        .setMimeType(ContentService.MimeType.JAVASCRIPT);
+    } catch (err) {
+      return ContentService
+        .createTextOutput(`${e.parameter.callback}(${JSON.stringify({ success: false, error: err.message })})`)
+        .setMimeType(ContentService.MimeType.JAVASCRIPT);
+    }
+  }
+
+  const callback = e.parameter.callback;
+  const csvData = e.parameter.csv;
+
+  if (!csvData || !callback) {
+    return ContentService
+      .createTextOutput(`${callback}(${JSON.stringify({ success: false, error: "Missing csv or callback parameter" })})`)
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+
+  try {
+    const rows = csvData.trim().split(';').map(line => {
+      const [reservation, room, name, checkIn, checkOut, guestCount, breakfastFlag, searchName, hash] = line.split(',');
+      return [reservation, room, name, checkIn, checkOut, guestCount, breakfastFlag, searchName, hash];
+    });
+
+    const sheet = SpreadsheetApp.openById("1p1tktgK4vo9Yyc_dC1NB5WL-m2HNS_R6vYZAWWJSMXQ").getSheetByName("guest_list");
+    if (!sheet) throw new Error("guest_list not found");
+
+    // Clear existing data from row 2 onwards
+    const lastRow = sheet.getLastRow();
+    if (lastRow > 1) {
+      sheet.getRange(2, 1, lastRow - 1, 9).clearContent();
+    }
+
+    // Insert new rows starting from row 2
+    sheet.getRange(2, 1, rows.length, 9).setValues(rows);
+
+    return ContentService
+      .createTextOutput(`${callback}(${JSON.stringify({ success: true, inserted: rows.length })})`)
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+
+  } catch (err) {
+    return ContentService
+      .createTextOutput(`${callback}(${JSON.stringify({ success: false, error: err.message })})`)
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+}
