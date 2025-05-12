@@ -58,6 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      document.getElementById("loadingOverlay").style.display = "flex";
+
       // ✅ 서버에 예약번호와 해쉬값 검증 요청
       try {
         const scriptUrl = "https://script.google.com/macros/s/AKfycbxlk6w8dPpztsopBPT6GqiEbNGz2ao9JTZyvXKArcDsX6lE2rA8Y-xifJ1bWddGxPfTIw/exec";
@@ -73,69 +75,29 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  const overlay = document.createElement("div");
+  overlay.id = "loadingOverlay";
+  overlay.style.position = "fixed";
+  overlay.style.top = 0;
+  overlay.style.left = 0;
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)";
+  overlay.style.display = "none";
+  overlay.style.alignItems = "center";
+  overlay.style.justifyContent = "center";
+  overlay.style.zIndex = 9999;
+  overlay.innerHTML = '<div style="color: white; font-size: 24px;">検索中…</div>';
+  document.body.appendChild(overlay);
 });
 
 window.handleVerifyResponse = function(response) {
+  document.getElementById("loadingOverlay").style.display = "none";
   if (!response.success) {
     alert("❌ QRコードの確認中にエラーが発生しました。");
   } else if (response.match === true) {
     alert("✅ QRコードがデータベースと一致しました。");
-    // ✅ 朝食人数入力テーブルを表示
-    const start = new Date(response.checkIn);
-    const end = new Date(response.checkOut);
-    const container = document.getElementById("breakfastCheckTable");
-    if (!container) {
-      console.error("❌ breakfastCheckTable element not found.");
-      return;
-    }
-    container.innerHTML = ""; // 기존 테이블 초기화
-
-    const tableTitle = document.createElement("h3");
-    tableTitle.textContent = "朝食チェック表";
-
-    const table = document.createElement("table");
-    table.style.width = "100%";
-    table.style.borderCollapse = "collapse";
-
-    const header = table.insertRow();
-    header.innerHTML = "<th>日付</th><th>人数</th>";
-    header.querySelectorAll("th").forEach(th => {
-      th.style.borderBottom = "1px solid #ccc";
-      th.style.padding = "8px";
-      th.style.textAlign = "left";
-    });
-
-    const days = [];
-    let current = new Date(start);
-    current.setDate(current.getDate() + 1); // 체크인 다음날부터 시작
-    while (current <= end) {
-      days.push(new Date(current));
-      current.setDate(current.getDate() + 1);
-    }
-
-    days.forEach(date => {
-      const row = table.insertRow();
-      const yyyy = date.getFullYear();
-      const mm = String(date.getMonth() + 1).padStart(2, '0');
-      const dd = String(date.getDate()).padStart(2, '0');
-      const dateString = `${yyyy}-${mm}-${dd}`;
-
-      const dateCell = row.insertCell();
-      dateCell.textContent = dateString;
-      dateCell.style.padding = "8px";
-
-      const inputCell = row.insertCell();
-      const input = document.createElement("input");
-      input.type = "number";
-      input.min = "0";
-      input.value = "0";
-      input.style.width = "60px";
-      inputCell.appendChild(input);
-      inputCell.style.padding = "8px";
-    });
-
-    container.appendChild(tableTitle);
-    container.appendChild(table);
   } else {
     alert("❌ データベースの情報と一致しません。");
   }

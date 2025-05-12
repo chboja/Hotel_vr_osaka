@@ -297,6 +297,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const reader = new FileReader();
       reader.onload = function (e) {
+        const overlay = document.createElement("div");
+        overlay.id = "uploadOverlay";
+        overlay.style.position = "fixed";
+        overlay.style.top = "0";
+        overlay.style.left = "0";
+        overlay.style.width = "100vw";
+        overlay.style.height = "100vh";
+        overlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)";
+        overlay.style.display = "flex";
+        overlay.style.justifyContent = "center";
+        overlay.style.alignItems = "center";
+        overlay.style.zIndex = "9999";
+        overlay.style.color = "white";
+        overlay.style.fontSize = "24px";
+        overlay.textContent = "アップロード中…";
+        document.body.appendChild(overlay);
         const csvText = e.target.result;
 
         console.log("📄 원본 CSV 미리보기:", csvText.slice(0, 500));
@@ -386,6 +402,13 @@ function uploadCsvChunksSequentially(chunks, index = 0, uploadTimestamp, SHEET_A
 
   window.uploadChunkCallback = function(response) {
     console.log(`✅ 청크 ${index + 1} 업로드 완료`, response);
+    if (index + 1 === chunks.length) {
+      // Last chunk uploaded, remove overlay
+      setTimeout(() => {
+        const overlay = document.getElementById("uploadOverlay");
+        if (overlay) overlay.remove();
+      }, 500); // slight delay to ensure write completes
+    }
     uploadCsvChunksSequentially(chunks, index + 1, uploadTimestamp, SHEET_API_URL);
   };
 }
