@@ -334,17 +334,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // --- 1. Clear sheet before uploading chunks ---
             const clearScript = document.createElement("script");
-            clearScript.src = `${SHEET_API_URL}?callback=handleJsonpResponse&clearOnly=true&timestamp=${encodeURIComponent(uploadTimestamp)}`;
+            clearScript.src = `${SHEET_API_URL}?callback=clearResponseHandler&clearOnly=true&timestamp=${encodeURIComponent(uploadTimestamp)}`;
             document.body.appendChild(clearScript);
 
-            // --- 2. Upload chunks ---
-            for (let i = 0; i < compacted.length; i += CHUNK_SIZE) {
-              const chunk = compacted.slice(i, i + CHUNK_SIZE);
-              const csvChunk = chunk.map(row => row.join(',')).join(';');
-              const script = document.createElement("script");
-              script.src = `${SHEET_API_URL}?callback=handleJsonpResponse&csv=${encodeURIComponent(csvChunk)}&timestamp=${encodeURIComponent(uploadTimestamp)}`;
-              document.body.appendChild(script);
-            }
+            window.clearResponseHandler = function(response) {
+              if (response.success && response.cleared) {
+                const chunks = [];
+                for (let i = 0; i < compacted.length; i += CHUNK_SIZE) {
+                  chunks.push(compacted.slice(i, i + CHUNK_SIZE));
+                }
+                uploadCsvChunksSequentially(chunks, 0, uploadTimestamp, SHEET_API_URL);
+              } else {
+                console.error("❌ clearOnly 실패", response);
+              }
+            };
           }
         });
       };
@@ -353,3 +356,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+// Helper to upload CSV in chunks sequentially
+function uploadCsvChunksSequentially(chunks, index = 0, uploadTimestamp, SHEET_API_URL) {
+  if (index >= chunks.length) return;
+
+  const chunk = chunks[index];
+  const csvChunk = chunk.map(row => row.join(',')).join(';');
+  const script = document.createElement("script");
+  script.src = `${SHEET_API_URL}?callback=uploadChunkCallback&csv=${encodeURIComponent(csvChunk)}&timestamp=${encodeURIComponent(uploadTimestamp)}`;
+  document.body.appendChild(script);
+
+  window.uploadChunkCallback = function(response) {
+    console.log(`✅ 청크 ${index + 1} 업로드 완료`, response);
+    uploadCsvChunksSequentially(chunks, index + 1, uploadTimestamp, SHEET_API_URL);
+  };
+}
