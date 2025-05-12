@@ -53,23 +53,23 @@ document.addEventListener("DOMContentLoaded", () => {
       const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
       const calculatedHash = hashHex.slice(0, 8);
 
-      if (calculatedHash === hashFromQR) {
-        alert("✅ QRコードが確認されました。");
-        // ✅ 서버에 예약번호와 해쉬값 검증 요청
-        try {
-          const scriptUrl = "https://script.google.com/macros/s/AKfycbyGVbFzfmFhlcAZn3zMB1YRI87_XeL99paDyjAYOTiLSyQY_3hulFwYuFdoXAXi_PDy/exec";
-          const verifyUrl = `${scriptUrl}?callback=handleVerifyResponse&verifyReservation=${encodeURIComponent(reservation)}&hashcode=${encodeURIComponent(hashFromQR)}`;
-
-          const script = document.createElement("script");
-          console.log(verifyUrl);
-          script.src = verifyUrl;
-          document.body.appendChild(script);
-        } catch (err) {
-          console.error("Verification request failed:", err);
-          alert("サーバーとの確認中にエラーが発生しました。");
-        }
-      } else {
+      if (calculatedHash !== hashFromQR) {
         alert("❌ QRコードが不正です。");
+        return;
+      }
+
+      // ✅ 서버에 예약번호와 해쉬값 검증 요청
+      try {
+        const scriptUrl = "https://script.google.com/macros/s/AKfycbxlk6w8dPpztsopBPT6GqiEbNGz2ao9JTZyvXKArcDsX6lE2rA8Y-xifJ1bWddGxPfTIw/exec";
+        const verifyUrl = `${scriptUrl}?callback=handleVerifyResponse&verifyReservation=${encodeURIComponent(reservation)}&hashcode=${encodeURIComponent(hashFromQR)}`;
+
+        const script = document.createElement("script");
+        console.log(verifyUrl);
+        script.src = verifyUrl;
+        document.body.appendChild(script);
+      } catch (err) {
+        console.error("Verification request failed:", err);
+        alert("サーバーとの確認中にエラーが発生しました。");
       }
     });
   }

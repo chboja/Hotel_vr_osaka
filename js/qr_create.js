@@ -1,5 +1,5 @@
 // Include WanaKana for romaji to katakana conversion
-const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbxqRooj398Uyu97FFbXrfpgkl2kI5cu1eEchexlZgT_XrIUQAXoJQ6nms83BZWUyPxnLQ/exec';
+const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbxlk6w8dPpztsopBPT6GqiEbNGz2ao9JTZyvXKArcDsX6lE2rA8Y-xifJ1bWddGxPfTIw/exec';
 const wanakanaScript = document.createElement("script");
 wanakanaScript.src = "https://unpkg.com/wanakana";
 document.head.appendChild(wanakanaScript);
@@ -169,6 +169,77 @@ window.handleJsonpResponse = function(response) {
     console.log("📊 expected:", response.debug.expected);
   }
   // You can handle post-upload feedback here if needed
+};
+
+// QRコード検証のJSONPコールバック
+window.handleVerifyResponse = function(response) {
+  console.log("🔍 QRコード検証結果:", response);
+  if (!response || typeof response.isValid === "undefined") {
+    alert("QRコードの検証に失敗しました。");
+    return;
+  }
+  if (response.isValid) {
+    // 朝食フラグで分岐
+    if (response.breakfastFlag === 1) {
+      alert("✅ QRコードが確認されました。");
+
+      // ✅ 朝食人数入力テーブルを表示
+      const start = new Date(response.checkIn);
+      const end = new Date(response.checkOut);
+      const container = document.getElementById("breakfastCheckTable");
+      container.innerHTML = ""; // 기존 테이블 초기화
+
+      const tableTitle = document.createElement("h3");
+      tableTitle.textContent = "朝食チェック表";
+
+      const table = document.createElement("table");
+      table.style.width = "100%";
+      table.style.borderCollapse = "collapse";
+      const header = table.insertRow();
+      header.innerHTML = "<th>日付</th><th>人数</th>";
+      header.querySelectorAll("th").forEach(th => {
+        th.style.borderBottom = "1px solid #ccc";
+        th.style.padding = "8px";
+        th.style.textAlign = "left";
+      });
+
+      const days = [];
+      let current = new Date(start);
+      current.setDate(current.getDate() + 1); // 체크인 다음날부터 시작
+      while (current <= end) {
+        days.push(new Date(current));
+        current.setDate(current.getDate() + 1);
+      }
+
+      days.forEach(date => {
+        const row = table.insertRow();
+        const yyyy = date.getFullYear();
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        const dateString = `${yyyy}-${mm}-${dd}`;
+
+        const dateCell = row.insertCell();
+        dateCell.textContent = dateString;
+        dateCell.style.padding = "8px";
+
+        const inputCell = row.insertCell();
+        const input = document.createElement("input");
+        input.type = "number";
+        input.min = "0";
+        input.value = "0";
+        input.style.width = "60px";
+        inputCell.appendChild(input);
+        inputCell.style.padding = "8px";
+      });
+
+      container.appendChild(tableTitle);
+      container.appendChild(table);
+    } else {
+      alert("Room Onlyの部屋です。");
+    }
+  } else {
+    alert("QRコードが無効です。");
+  }
 };
 
 // 部屋番号検索のJSONPコールバック
