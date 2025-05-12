@@ -63,7 +63,15 @@ button:hover {
 }
 
 #qrResult {
-  text-align: center;
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  font-size: 16px;
+  text-align: left;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 #qrInfoBox {
@@ -153,4 +161,21 @@ button:hover {
   font-size: 14px;
   width: auto;
   min-width: 60px;
+}
+
+#searchButton {
+  padding: 10px 12px;
+  background-color: #2e86de;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+#searchButton:hover {
+  background-color: #1b4f9c;
 }
