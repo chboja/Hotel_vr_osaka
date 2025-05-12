@@ -1,5 +1,5 @@
 // Include WanaKana for romaji to katakana conversion
-const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbx47EgT_4uDm2Uhh5tmEPpkNGXwHltMIFj_HYt95e1PbWq1fRww57mGj-LwJrQ-TA6hlA/exec';
+const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbzR6TJMZ30C5Dk7on3j3QRD9iTplRgWvziR_wPn3kcz5bNGLeNnKr7FJRdjCEddPym5zQ/exec';
 const wanakanaScript = document.createElement("script");
 wanakanaScript.src = "https://unpkg.com/wanakana";
 document.head.appendChild(wanakanaScript);
@@ -324,6 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             console.log("📊 JSONP 전送用 문자열 배열 (with searchName):", compacted);
             const CHUNK_SIZE = 30;
+            const expectedCount = compacted.length;
             const SHEET_API_URL = getSheetApiUrl();
 
             // Split compacted data into chunks
@@ -337,7 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
               const script = document.createElement("script");
               script.src = `${SHEET_API_URL}?callback=handleJsonpResponse&csv=${encodeURIComponent(csvChunk)}`
                 + (isFirst ? "&clear=true" : "")
-                + (isLast ? "&finish=true" : "");
+                + `&expectedCount=${expectedCount}`;
 
               document.body.appendChild(script);
             }

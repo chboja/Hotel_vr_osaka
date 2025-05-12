@@ -86,13 +86,14 @@ function doGet(e) {
     }
 
     const cacheKey = "csv_accumulated_data";
+    const expectedCount = Number(e.parameter.expectedCount);
     const cached = cache.get(cacheKey);
     const existing = cached ? JSON.parse(cached) : [];
 
     const combined = existing.concat(rows);
     cache.put(cacheKey, JSON.stringify(combined), 300); // keep for 5 minutes
 
-    if (e.parameter.finish === "true") {
+    if (!isNaN(expectedCount) && combined.length >= expectedCount) {
       if (e.parameter.clear === "true") {
         const lastRow = sheet.getLastRow();
         if (lastRow > 1) {
