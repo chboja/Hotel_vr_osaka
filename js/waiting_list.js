@@ -66,7 +66,10 @@ document.addEventListener("DOMContentLoaded", () => {
       !e.target.closest("input") &&
       !e.target.closest("textarea")
     ) {
-      active.blur();
+      // Delay blur slightly to ensure compatibility with iPadOS event processing
+      setTimeout(() => {
+        active.blur();
+      }, 50);
     }
   });
 });
