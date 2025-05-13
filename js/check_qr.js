@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const parts = qrText.split(',');
-      if (parts.length !== 7) {
+      if (parts.length !== 6) {
         alert("QRコードの形式が正しくありません。");
         return;
       }
