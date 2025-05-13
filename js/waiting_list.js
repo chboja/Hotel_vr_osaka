@@ -47,4 +47,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("qrResult").value = "";
   });
+
+  // ✅ Enter 키 입력 시 키보드 닫기
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && document.activeElement &&
+        (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA")) {
+      e.preventDefault(); // submit 방지
+      document.activeElement.blur(); // 키보드 닫기
+    }
+  });
+
+  // ✅ 입력 외의 영역을 터치하면 키보드 닫기
+  document.addEventListener("touchstart", (e) => {
+    const active = document.activeElement;
+    if (
+      active &&
+      (active.tagName === "INPUT" || active.tagName === "TEXTAREA") &&
+      !e.target.closest("input") &&
+      !e.target.closest("textarea")
+    ) {
+      active.blur();
+    }
+  });
 });
