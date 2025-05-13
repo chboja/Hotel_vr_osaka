@@ -1,4 +1,5 @@
 // Include WanaKana for romaji to katakana conversion
+import { generateHash } from './hash_util.js';
 const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbz3ftPOnEJ_7OHA7X8cV0oNP0c6Br0RP9gY1DdWFFfJNo9hC1DLFPV1Rkc9TnvG-lcG5Q/exec';
 const wanakanaScript = document.createElement("script");
 wanakanaScript.src = "https://unpkg.com/wanakana";
@@ -246,11 +247,9 @@ document.addEventListener("DOMContentLoaded", () => {
         days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       }
 
+      const hash = await generateHash(room, checkIn, checkOut, days);
       const data = `${room},${checkIn},${checkOut},${days}`;
-      const secret = "HOTEL_ONLY_SECRET_KEY";
-
-      const hash = await sha256(data + secret);
-      const qrText = `${data},${hash.slice(0, 8)}`;
+      const qrText = `${data},${hash}`;
 
       // ✅ 텍스트 정보 표시
       const textInfo = `Room : ${room}<br>Check-in : ${checkIn}<br>Check-out : ${checkOut}(~10:00)<br>Guests : ${guests}<br>Breakfast : ${breakfast}<br>Booking No : ${reservation}`;
@@ -352,9 +351,8 @@ document.addEventListener("DOMContentLoaded", () => {
                   ? parseInt(row["breakfast"])
                   : (row["プラン名"]?.toLowerCase().includes("room only") ? 0 : 1);
 
-                const hashData = `${room},${checkIn},${checkOut},${checkOut && checkIn ? Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)) : ""}`;
-                const secret = "HOTEL_ONLY_SECRET_KEY";
-                const hash = await sha256(hashData + secret);
+                const days = checkOut && checkIn ? Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)) : "";
+                const hash = await generateHash(room, checkIn, checkOut, days);
 
                 let searchName = reserver;
                 if (window.wanakana) {
