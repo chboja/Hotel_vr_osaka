@@ -5,7 +5,7 @@ body {
   background: #f4f4f4;
   display: block;
   height: 100vh;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .container {
