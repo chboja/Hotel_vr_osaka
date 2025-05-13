@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>朝食待機リスト</title>
+  <link rel="stylesheet" href="css/waiting_list.css" />
+  <script src="js/html5-qrcode.min.js"></script>
+  <script src="js/waiting_list.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Left side: QR scanner -->
+    <div class="scanner-section">
+      <h2>QRコードスキャン</h2>
+      <div id="reader" class="qr-reader"></div>
+      <label for="guestCount">人数を入力:</label>
+      <input type="number" id="guestCount" min="1" max="10" />
+      <button id="addToListButton">追加</button>
+    </div>
+
+    <!-- Right side: Waiting list display -->
+    <div class="list-section">
+      <h2>朝食大気リスト</h2>
+      <ul id="waitingList"></ul>
+    </div>
+  </div>
+</body>
+</html>
