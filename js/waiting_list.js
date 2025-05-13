@@ -1,11 +1,11 @@
 function onScanSuccess(decodedText, decodedResult) {
   console.log(`✅ QRコードスキャン成功: ${decodedText}`);
-  document.getElementById("scannedText").value = decodedText;
+  document.getElementById("qrResult").value = decodedText;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const qrResult = document.getElementById("scannedText");
-  const qrRegionId = "cameraPreview";
+  const qrResult = document.getElementById("qrResult");
+  const qrRegionId = "reader";
   const html5QrCode = new Html5Qrcode(qrRegionId);
 
   function onScanSuccess(decodedText, decodedResult) {
@@ -32,10 +32,10 @@ document.addEventListener("DOMContentLoaded", () => {
     qrResult.value = "カメラへのアクセスに失敗しました。";
   });
 
-  const submitBtn = document.getElementById("submitGuest");
+  const submitBtn = document.getElementById("searchButton");
   submitBtn.addEventListener("click", () => {
-    const text = document.getElementById("scannedText").value.trim();
-    const guests = document.getElementById("guestCount").value.trim();
+    const text = document.getElementById("qrResult").value.trim();
+    const guests = prompt("朝食を取る人数を入力してください。");
     if (!text || !guests) {
       alert("QR情報と人数を入力してください。");
       return;
@@ -43,9 +43,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const listItem = document.createElement("li");
     listItem.textContent = `部屋: ${text}, 朝食人数: ${guests}`;
-    document.getElementById("guestList").appendChild(listItem);
+    document.getElementById("waitingList").appendChild(listItem);
 
-    document.getElementById("scannedText").value = "";
-    document.getElementById("guestCount").value = "";
+    document.getElementById("qrResult").value = "";
   });
 });
