@@ -10,7 +10,7 @@ async function generateHash(room, checkIn, checkOut, days) {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 8);
 }
 
-export async function generateHash({ room, checkIn, checkOut }) {
+async function generateHashFromObject({ room, checkIn, checkOut }) {
   const checkInDate = new Date(checkIn);
   const checkOutDate = new Date(checkOut);
   const days = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));

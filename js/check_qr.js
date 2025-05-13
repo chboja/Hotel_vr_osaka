@@ -1,4 +1,15 @@
-import { generateHash } from './hash_util.js';
+
+async function generateHash({ room, checkIn, checkOut }) {
+  const checkInDate = new Date(checkIn);
+  const checkOutDate = new Date(checkOut);
+  const days = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+  const secret = "HOTEL_ONLY_SECRET_KEY";
+
+  const data = `${room},${checkIn},${checkOut},${days}`;
+  const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data + secret));
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 8);
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   const qrResult = document.getElementById("qrResult");
@@ -48,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const [room, checkIn, checkOut, days, hashFromQR] = parts;
-      const calculatedHash = await generateHash(room, checkIn, checkOut, days);
+      const calculatedHash = await generateHash({ room, checkIn, checkOut });
 
       if (calculatedHash !== hashFromQR) {
         alert("❌ QRコードが不正です。");
