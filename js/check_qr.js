@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
 window.handleVerifyResponse = function(response) {
   document.getElementById("loadingOverlay").style.display = "none";
   if (!response.success) {
-    alert("⚠️ QRコードの情報が変更された可能性があります。フロントでご確認ください。");
+    alert("⚠️ 11QRコードの情報が変更された可能性があります。フロントでご確認ください。");
   } else if (response.match === true) {
     const breakfastFlag = Number(response.breakfastFlag);
     if (breakfastFlag === 0) {
@@ -114,6 +114,6 @@ window.handleVerifyResponse = function(response) {
       alert("✅ QRコードがデータベースと一致しました。");
     }
   } else {
-    alert("⚠️ QRコードの情報が変更された可能性があります。フロントでご確認ください。");
+    alert("⚠️ 22QRコードの情報が変更された可能性があります。フロントでご確認ください。");
   }
 };
