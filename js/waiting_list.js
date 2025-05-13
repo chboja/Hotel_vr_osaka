@@ -72,4 +72,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 50);
     }
   });
+
+  // ✅ iOS 키보드가 사라진 후 스크롤 위치 복구
+  document.addEventListener("focusout", () => {
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+  });
 });
