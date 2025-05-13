@@ -40,14 +40,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const parts = qrText.split(',');
-      if (parts.length !== 6) {
+      if (parts.length !== 5) {
         alert("QRコードの形式が正しくありません。");
         return;
       }
 
-      const [room, checkIn, checkOut, days, reservation, hashFromQR] = parts;
+      const [room, checkIn, checkOut, days, hashFromQR] = parts;
       const secret = "HOTEL_ONLY_SECRET_KEY";
-      const data = `${room},${checkIn},${checkOut},${days},${reservation}`;
+      const data = `${room},${checkIn},${checkOut},${days}`;
       const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data + secret));
       const hashArray = Array.from(new Uint8Array(hashBuffer));
       const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // ✅ 서버에 예약번호와 해쉬값 검증 요청
       try {
         const scriptUrl = "https://script.google.com/macros/s/AKfycbz3ftPOnEJ_7OHA7X8cV0oNP0c6Br0RP9gY1DdWFFfJNo9hC1DLFPV1Rkc9TnvG-lcG5Q/exec";
-        const verifyUrl = `${scriptUrl}?callback=handleVerifyResponse&verifyReservation=${encodeURIComponent(reservation)}&hashcode=${encodeURIComponent(hashFromQR)}`;
+        const verifyUrl = `${scriptUrl}?callback=handleVerifyResponse&hashcode=${encodeURIComponent(hashFromQR)}`;
 
         const script = document.createElement("script");
         console.log(verifyUrl);
