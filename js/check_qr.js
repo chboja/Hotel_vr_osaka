@@ -53,12 +53,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const parts = qrText.split(',');
-      if (parts.length !== 5) {
+      if (parts.length !== 6) {
         alert("QRコードの形式が正しくありません。");
         return;
       }
 
-      const [room, checkIn, checkOut, days, hashFromQR] = parts;
+      const [room, checkIn, checkOut, days, reservation, hashFromQR] = parts;
       const calculatedHash = await generateHash({ room, checkIn, checkOut });
 
       if (calculatedHash !== hashFromQR) {
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // ✅ 서버에 예약번호와 해쉬값 검증 요청
       try {
         const scriptUrl = "https://script.google.com/macros/s/AKfycbz3ftPOnEJ_7OHA7X8cV0oNP0c6Br0RP9gY1DdWFFfJNo9hC1DLFPV1Rkc9TnvG-lcG5Q/exec";
-        const verifyUrl = `${scriptUrl}?callback=handleVerifyResponse&hashcode=${encodeURIComponent(hashFromQR)}`;
+        const verifyUrl = `${scriptUrl}?callback=handleVerifyResponse&hashcode=${encodeURIComponent(hashFromQR)}&verifyReservation=${encodeURIComponent(reservation)}`;
 
         const script = document.createElement("script");
         console.log(verifyUrl);

@@ -269,8 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const hash = await generateHash(room, checkIn, checkOut, days);
-      const data = `${room},${checkIn},${checkOut},${days}`;
-      const qrText = `${data},${reservation},${hash}`;
+      const qrText = `${room},${checkIn},${checkOut},${days},${reservation},${hash}`;
 
       // ✅ 텍스트 정보 표시
       const textInfo = `Room : ${room}<br>Check-in : ${checkIn}<br>Check-out : ${checkOut}(~10:00)<br>Guests : ${guests}<br>Breakfast : ${breakfast}<br>Booking No : ${reservation}`;
