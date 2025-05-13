@@ -3,10 +3,18 @@ body {
   margin: 0;
   padding: 0;
   background: #f4f4f4;
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.container {
   display: flex;
   flex-direction: row;
   height: 100vh;
-  overflow: hidden;
+  gap: 20px;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .scanner-section {
@@ -20,6 +28,8 @@ body {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
   margin: 20px;
+  width: 100%;
+  height: 100%;
 }
 
 .list-section {
@@ -33,21 +43,28 @@ body {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
   margin: 20px;
+  width: 100%;
+  height: 100%;
 }
 
 #reader {
   width: 100%;
-  max-width: 500px;
   height: auto;
+  aspect-ratio: 4 / 3;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-top: 20px;
 }
 
 #waiting-list {
+  margin-top: 20px;
+  list-style: none;
+  padding: 0;
+  font-size: 18px;
   width: 100%;
-  max-width: 500px;
   background: #fafafa;
   border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 20px;
   box-shadow: 0 0 8px rgba(0,0,0,0.1);
 }
 
