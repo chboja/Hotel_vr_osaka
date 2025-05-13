@@ -1,5 +1,26 @@
+
 // Include WanaKana for romaji to katakana conversion
-import { generateHash } from './hash_util.js';
+
+// --- generateHash function (standalone, not imported) ---
+async function generateHash(room, checkIn, checkOut, days) {
+  const secret = "HOTEL_ONLY_SECRET_KEY";
+  const data = `${room},${checkIn},${checkOut},${days}`;
+  const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data + secret));
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 8);
+}
+
+export async function generateHash({ room, checkIn, checkOut }) {
+  const checkInDate = new Date(checkIn);
+  const checkOutDate = new Date(checkOut);
+  const days = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+  const secret = "HOTEL_ONLY_SECRET_KEY";
+
+  const data = `${room},${checkIn},${checkOut},${days}`;
+  const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data + secret));
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 8);
+}
 const getSheetApiUrl = () => 'https://script.google.com/macros/s/AKfycbz3ftPOnEJ_7OHA7X8cV0oNP0c6Br0RP9gY1DdWFFfJNo9hC1DLFPV1Rkc9TnvG-lcG5Q/exec';
 const wanakanaScript = document.createElement("script");
 wanakanaScript.src = "https://unpkg.com/wanakana";
