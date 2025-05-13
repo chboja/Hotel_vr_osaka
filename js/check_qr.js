@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const [room, checkIn, checkOut, days, guests, reservation, hashFromQR] = parts;
+      const [room, checkIn, checkOut, days, reservation, hashFromQR] = parts;
       const secret = "HOTEL_ONLY_SECRET_KEY";
       const data = `${room},${checkIn},${checkOut},${days},${reservation}`;
       const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data + secret));
