@@ -1,26 +1,36 @@
-
-
-
-let html5QrCode;
-
 function onScanSuccess(decodedText, decodedResult) {
   console.log(`✅ QRコードスキャン成功: ${decodedText}`);
   document.getElementById("scannedText").value = decodedText;
 }
 
-function startCameraScanner() {
-  const qrConfig = {
-    fps: 10,
-    qrbox: { width: 250, height: 250 }
-  };
-
-  html5QrCode = new Html5Qrcode("cameraPreview");
-  html5QrCode.start({ facingMode: "environment" }, qrConfig, onScanSuccess)
-    .catch(err => console.error("❌ カメラ起動エラー:", err));
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-  startCameraScanner();
+  const qrResult = document.getElementById("scannedText");
+  const qrRegionId = "cameraPreview";
+  const html5QrCode = new Html5Qrcode(qrRegionId);
+
+  function onScanSuccess(decodedText, decodedResult) {
+    console.log(`✅ QRコードスキャン成功: ${decodedText}`);
+    qrResult.value = decodedText;
+    html5QrCode.stop().catch(err => console.error("Failed to stop scanner:", err));
+  }
+
+  Html5Qrcode.getCameras().then(devices => {
+    if (devices && devices.length > 0) {
+      html5QrCode.start(
+        { facingMode: "user" },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        onScanSuccess
+      ).catch(err => {
+        console.error("Camera start error:", err);
+        qrResult.value = "カメラの起動に失敗しました。";
+      });
+    } else {
+      qrResult.value = "カメラが見つかりませんでした。";
+    }
+  }).catch(err => {
+    console.error("Camera access error:", err);
+    qrResult.value = "カメラへのアクセスに失敗しました。";
+  });
 
   const submitBtn = document.getElementById("submitGuest");
   submitBtn.addEventListener("click", () => {

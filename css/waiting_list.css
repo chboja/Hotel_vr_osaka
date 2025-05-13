@@ -11,13 +11,16 @@ body {
 
 #camera-section, #list-section {
   flex: 1;
-  padding: 20px;
+  padding: 40px 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  background: white;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  margin: 20px;
 }
 
 #camera-section {
@@ -46,4 +49,29 @@ body {
   padding: 8px 0;
   border-bottom: 1px solid #eee;
   font-size: 18px;
+}
+
+button {
+  padding: 10px;
+  background-color: #2e86de;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+button:hover {
+  background-color: #1b4f9c;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  font-size: 16px;
 }
