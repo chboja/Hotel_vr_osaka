@@ -1,85 +1,51 @@
-body {
-  font-family: sans-serif;
-  margin: 0;
-  padding: 20px;
-  background: #f4f4f4;
-  display: flex;
-  justify-content: center;
-  height: 100vh;
-  box-sizing: border-box;
+function onScanSuccess(decodedText, decodedResult) {
+  console.log(`✅ QRコードスキャン成功: ${decodedText}`);
+  document.getElementById("qrResult").value = decodedText;
 }
 
-.container {
-  display: flex;
-  width: 100%;
-  max-width: 1200px;
-  gap: 20px;
-  height: 100%;
-}
+document.addEventListener("DOMContentLoaded", () => {
+  const qrResult = document.getElementById("qrResult");
+  const qrRegionId = "reader";
+  const html5QrCode = new Html5Qrcode(qrRegionId);
 
-.scanner-section,
-.list-section {
-  flex: 1;
-  background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+  function onScanSuccess(decodedText, decodedResult) {
+    console.log(`✅ QRコードスキャン成功: ${decodedText}`);
+    qrResult.value = decodedText;
+    html5QrCode.stop().catch(err => console.error("Failed to stop scanner:", err));
+  }
 
-.qr-reader {
-  width: 100%;
-  max-width: 400px;
-  aspect-ratio: 1 / 1;
-  margin-bottom: 20px;
-}
+  Html5Qrcode.getCameras().then(devices => {
+    if (devices && devices.length > 0) {
+      html5QrCode.start(
+        { facingMode: "user" },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        onScanSuccess
+      ).catch(err => {
+        console.error("Camera start error:", err);
+        qrResult.value = "カメラの起動に失敗しました。";
+      });
+    } else {
+      qrResult.value = "カメラが見つかりませんでした。";
+    }
+  }).catch(err => {
+    console.error("Camera access error:", err);
+    qrResult.value = "カメラへのアクセスに失敗しました。";
+  });
 
-.input-group {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  max-width: 400px;
-  margin-top: 10px;
-}
+  const submitBtn = document.getElementById("submitGuest");
+  submitBtn.addEventListener("click", () => {
+    const text = document.getElementById("qrResult").value.trim();
+    const guests = document.getElementById("guestInput").value.trim();
+    if (!text || !guests) {
+      alert("QR情報と人数を入力してください。");
+      return;
+    }
 
-.input-group input {
-  flex: 1;
-  padding: 10px;
-  font-size: 16px;
-  line-height: 1.5;
-  height: 40px;
-  box-sizing: border-box;
-}
+    const listItem = document.createElement("li");
+    listItem.textContent = `部屋: ${text}, 朝食人数: ${guests}`;
+    document.getElementById("waitingList").appendChild(listItem);
 
-.input-group button {
-  height: 40px;
-  padding: 0 20px;
-  background-color: #2e86de;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.input-group button:hover {
-  background-color: #1b4f9c;
-}
-
-#waitingList {
-  width: 100%;
-  max-width: 400px;
-  margin-top: 20px;
-  list-style: none;
-  padding: 0;
-}
-
-#waitingList li {
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-  font-size: 16px;
-}
+    document.getElementById("qrResult").value = "";
+    document.getElementById("guestInput").value = "";
+  });
+});
