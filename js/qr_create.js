@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
         days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       }
 
-      const data = `${room},${checkIn},${checkOut},${days},${guests},${reservation}`;
+      const data = `${room},${checkIn},${checkOut},${days},${reservation}`;
       const secret = "HOTEL_ONLY_SECRET_KEY";
 
       const hash = await sha256(data + secret);
@@ -371,11 +371,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const CHUNK_SIZE = 30;
             const expectedCount = compacted.length;
             const SHEET_API_URL = getSheetApiUrl();
-            const uploadTimestamp = new Date().toISOString();
 
             // --- 1. Clear sheet before uploading chunks (command-based) ---
             const commandScript = document.createElement("script");
-            commandScript.src = `${SHEET_API_URL}?callback=handleCommandResponse&command=clear&timestamp=${encodeURIComponent(uploadTimestamp)}`;
+            commandScript.src = `${SHEET_API_URL}?callback=handleCommandResponse&command=clear`;
             document.body.appendChild(commandScript);
 
             window.handleCommandResponse = function(response) {
@@ -384,7 +383,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 for (let i = 0; i < compacted.length; i += CHUNK_SIZE) {
                   chunks.push(compacted.slice(i, i + CHUNK_SIZE));
                 }
-                uploadCsvChunksSequentially(chunks, 0, uploadTimestamp, SHEET_API_URL);
+                uploadCsvChunksSequentially(chunks, 0, SHEET_API_URL);
               } else {
                 console.error("❌ clear command 실패", response);
               }
@@ -398,13 +397,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 // Helper to upload CSV in chunks sequentially
-function uploadCsvChunksSequentially(chunks, index = 0, uploadTimestamp, SHEET_API_URL) {
+function uploadCsvChunksSequentially(chunks, index = 0, SHEET_API_URL) {
   if (index >= chunks.length) return;
 
   const chunk = chunks[index];
   const csvChunk = chunk.map(row => row.join(',')).join(';');
   const script = document.createElement("script");
-  script.src = `${SHEET_API_URL}?callback=uploadChunkCallback&csv=${encodeURIComponent(csvChunk)}&timestamp=${encodeURIComponent(uploadTimestamp)}`;
+  script.src = `${SHEET_API_URL}?callback=uploadChunkCallback&csv=${encodeURIComponent(csvChunk)}`;
   document.body.appendChild(script);
 
   window.uploadChunkCallback = function(response) {
@@ -416,6 +415,6 @@ function uploadCsvChunksSequentially(chunks, index = 0, uploadTimestamp, SHEET_A
         if (overlay) overlay.remove();
       }, 500); // slight delay to ensure write completes
     }
-    uploadCsvChunksSequentially(chunks, index + 1, uploadTimestamp, SHEET_API_URL);
+    uploadCsvChunksSequentially(chunks, index + 1, SHEET_API_URL);
   };
 }

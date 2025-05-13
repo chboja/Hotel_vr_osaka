@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const [room, checkIn, checkOut, days, guests, reservation, hashFromQR] = parts;
       const secret = "HOTEL_ONLY_SECRET_KEY";
-      const data = `${room},${checkIn},${checkOut},${days},${guests},${reservation}`;
+      const data = `${room},${checkIn},${checkOut},${days},${reservation}`;
       const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data + secret));
       const hashArray = Array.from(new Uint8Array(hashBuffer));
       const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
 window.handleVerifyResponse = function(response) {
   document.getElementById("loadingOverlay").style.display = "none";
   if (!response.success) {
-    alert("❌ QRコードの確認中にエラーが発生しました。");
+    alert("⚠️ QRコードの情報が変更された可能性があります。フロントでご確認ください。");
   } else if (response.match === true) {
     const breakfastFlag = Number(response.breakfastFlag);
     if (breakfastFlag === 0) {
@@ -106,6 +106,6 @@ window.handleVerifyResponse = function(response) {
       alert("✅ QRコードがデータベースと一致しました。");
     }
   } else {
-    alert("❌ データベースの情報と一致しません。");
+    alert("⚠️ QRコードの情報が変更された可能性があります。フロントでご確認ください。");
   }
 };

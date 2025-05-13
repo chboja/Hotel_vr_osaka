@@ -103,22 +103,9 @@ function doGet(e) {
     const sheet = SpreadsheetApp.openById("1p1tktgK4vo9Yyc_dC1NB5WL-m2HNS_R6vYZAWWJSMXQ").getSheetByName("guest_list");
     if (!sheet) throw new Error("guest_list not found");
 
-    const timestamp = e.parameter.timestamp;
-
     if (command === "clear") {
-      const timestamp = e.parameter.timestamp;
-      const sheet = SpreadsheetApp.openById("1p1tktgK4vo9Yyc_dC1NB5WL-m2HNS_R6vYZAWWJSMXQ").getSheetByName("guest_list");
-      if (!sheet) throw new Error("guest_list not found");
-
-      const data = sheet.getDataRange().getValues();
-      const filtered = data.filter((row, index) => index === 0 || row[9] === timestamp);
-
       if (sheet.getLastRow() > 1) {
         sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn()).clearContent();
-      }
-
-      if (filtered.length > 1 && filtered[0].length > 0) {
-        sheet.getRange(2, 1, filtered.length - 1, filtered[0].length).setValues(filtered.slice(1));
       }
 
       return ContentService
@@ -131,7 +118,7 @@ function doGet(e) {
       return [reservation, room, name, checkIn, checkOut, guestCount, breakfastFlag, searchName, hash];
     });
 
-    const augmentedRows = rows.map(r => [...r, timestamp]);
+    const augmentedRows = rows;
 
     sheet.getRange(sheet.getLastRow() + 1, 1, augmentedRows.length, augmentedRows[0].length).setValues(augmentedRows);
 
