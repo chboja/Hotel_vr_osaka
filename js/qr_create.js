@@ -352,7 +352,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   ? parseInt(row["breakfast"])
                   : (row["プラン名"]?.toLowerCase().includes("room only") ? 0 : 1);
 
-                const hashData = `${room},${checkIn},${checkOut},${checkOut && checkIn ? Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)) : ""},${guestCount},${reservation}`;
+                const hashData = `${room},${checkIn},${checkOut},${checkOut && checkIn ? Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)) : ""},${reservation}`;
                 const secret = "HOTEL_ONLY_SECRET_KEY";
                 const hash = await sha256(hashData + secret);
 
