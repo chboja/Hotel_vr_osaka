@@ -9,7 +9,7 @@ body {
   overflow: hidden;
 }
 
-#camera-section, #list-section {
+.scanner-section, .list-section {
   flex: 1;
   padding: 40px 20px;
   box-sizing: border-box;
@@ -23,7 +23,7 @@ body {
   margin: 20px;
 }
 
-#camera-section {
+.scanner-section {
   border-right: 1px solid #ccc;
 }
 
