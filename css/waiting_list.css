@@ -123,15 +123,16 @@ textarea {
   display: grid;
   grid-template-columns: 1fr 1fr; /* make buttons use full column space */
   gap: 10px;                      /* small consistent gap */
-  justify-content: center;        /* center the grid */
   margin-top: 10px;
   width: 100%;
-  max-width: 900px;
-  height: 700px;
+  max-width: 90vw;
+  height: 60vh;
+  max-height: 600px;
   overflow-y: auto;
   background-color: #fcfcfc;
   padding: 10px;
   border-radius: 8px;
+  grid-auto-rows: 70px; /* ensure consistent row height */
 }
 /* Ensure consistent button height and better touch usability */
 button.dynamic-button {
@@ -156,12 +157,29 @@ button.dynamic-button:hover {
   background-color: #ffffff;
   color: rgb(0, 0, 0);
   border: 1px solid #123;
-  padding: 15px 0;
   font-size: 25px;
   cursor: pointer;
   border-radius: 6px;
+
+  height: 60px;                /* fixed height */
+  line-height: 60px;           /* vertical alignment */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 16px;             /* vertical padding removed, horizontal retained */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%; /* fill column space */
 }
 
 .button-grid button:hover {
   background-color: #f5f5f5;
+}
+
+@media (max-width: 768px) {
+  .list-section #List {
+    grid-template-columns: 1fr; /* stack buttons in one column on small screens */
+  }
 }
