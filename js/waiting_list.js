@@ -90,6 +90,18 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("focusout", () => {
     setTimeout(() => {
       window.scrollTo(0, 0);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 200); // 추가 반복 호출로 iPad 복원 보정
     }, 100);
   });
+
+  // ✅ visualViewport 변화 감지로 iPad 대응
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", () => {
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 100);
+    });
+  }
 });
