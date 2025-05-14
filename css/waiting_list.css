@@ -1,3 +1,10 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
 body {
   font-family: sans-serif;
   margin: 0;
@@ -12,6 +19,7 @@ body {
   display: flex;
   flex-direction: row;
   height: 100%;
+  overflow: hidden; /* prevent inner scroll */
   gap: 20px;
   padding: 20px;
   box-sizing: border-box;
@@ -22,6 +30,8 @@ body {
 .scanner-section,
 .list-section {
   height: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .scanner-section {

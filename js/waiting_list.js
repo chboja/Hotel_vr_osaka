@@ -42,23 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const guests = prompt("朝食を取る人数を入力してください。");
-    if (!guests) {
-      alert("人数を入力してください。");
-      return;
-    }
-
-    const button = document.createElement("button");
-    button.textContent = `${text}号 ${guests}名`;
-    button.onclick = () => {
-      alert(`"${text}" (${guests}名) ボタンがクリックされました`);
-    };
-
-    const listContainer = document.getElementById("List");
-    listContainer.appendChild(button);
-
-    count++;
-    document.getElementById("qrResult").value = "";
+    window.currentRoomText = text; // store room info globally
+    document.getElementById("customPromptOverlay").style.display = "flex"; // show modal
   });
 
   // ✅ Enter 키 입력 시 키보드 닫기
@@ -78,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
       (active.tagName === "INPUT" || active.tagName === "TEXTAREA") &&
       !e.target.closest("input") &&
       !e.target.closest("textarea")
-    ) {
+    ) { 
       // Delay blur slightly to ensure compatibility with iPadOS event processing
       setTimeout(() => {
         active.blur();
@@ -100,4 +85,31 @@ document.addEventListener("DOMContentLoaded", () => {
       window.scrollTo({ top: lastScrollY, behavior: "smooth" });
     }, 200);
   });
+  // --- Helper functions for custom guest count modal ---
+  window.submitGuestCount = function() {
+    const guests = document.getElementById("guestCountInput").value;
+    if (!guests) {
+      alert("人数を入力してください。");
+      return;
+    }
+
+    const text = window.currentRoomText || "";
+    const button = document.createElement("button");
+    button.textContent = `${text}号 ${guests}名`;
+    button.onclick = () => {
+      alert(`"${text}" (${guests}名) ボタンがクリックされました`);
+    };
+
+    const listContainer = document.getElementById("List");
+    listContainer.appendChild(button);
+
+    document.getElementById("qrResult").value = "";
+    document.getElementById("guestCountInput").value = "";
+    document.getElementById("customPromptOverlay").style.display = "none";
+  };
+
+  window.closeCustomPrompt = function() {
+    document.getElementById("customPromptOverlay").style.display = "none";
+    document.getElementById("guestCountInput").value = "";
+  };
 });
