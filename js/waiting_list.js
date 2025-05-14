@@ -46,12 +46,12 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("customPromptOverlay").style.display = "flex"; // show modal
   });
 
-  // ✅ Enter 키 입력 시 키보드 닫기
+  // ✅ Enter 키 입력 시 검색 버튼 클릭 실행
   document.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && document.activeElement &&
-        (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA")) {
-      e.preventDefault(); // submit 방지
-      document.activeElement.blur(); // 키보드 닫기
+        document.activeElement.id === "qrResult") {
+      e.preventDefault(); // 기본 엔터 동작 막기
+      document.getElementById("searchButton").click(); // 검색 버튼 클릭 실행
     }
   });
 
