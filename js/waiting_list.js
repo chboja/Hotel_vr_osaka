@@ -32,19 +32,32 @@ document.addEventListener("DOMContentLoaded", () => {
     qrResult.value = "カメラへのアクセスに失敗しました。";
   });
 
+  let count = 1;
+
   const submitBtn = document.getElementById("searchButton");
   submitBtn.addEventListener("click", () => {
     const text = document.getElementById("qrResult").value.trim();
-    const guests = prompt("朝食を取る人数を入力してください。");
-    if (!text || !guests) {
-      alert("QR情報と人数を入力してください。");
+    if (!text) {
+      alert("部屋番号を入力してください。");
       return;
     }
 
-    const listItem = document.createElement("li");
-    listItem.textContent = `部屋: ${text}, 朝食人数: ${guests}`;
-    document.getElementById("waitingList").appendChild(listItem);
+    const guests = prompt("朝食を取る人数を入力してください。");
+    if (!guests) {
+      alert("人数を入力してください。");
+      return;
+    }
 
+    const button = document.createElement("button");
+    button.textContent = `${text}号 ${guests}名`;
+    button.onclick = () => {
+      alert(`"${text}" (${guests}名) ボタンがクリックされました`);
+    };
+
+    const listContainer = document.getElementById("List");
+    listContainer.appendChild(button);
+
+    count++;
     document.getElementById("qrResult").value = "";
   });
 

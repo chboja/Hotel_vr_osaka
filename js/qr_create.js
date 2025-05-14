@@ -2,9 +2,9 @@
 // Include WanaKana for romaji to katakana conversion
 
 // --- generateHash function (standalone, not imported) ---
-async function generateHash(room, checkIn, checkOut, days) {
+async function generateHash(room, checkIn, checkOut, guests, reservation) {
   const secret = "HOTEL_ONLY_SECRET_KEY";
-  const data = `${room},${checkIn},${checkOut},${days}`;
+  const data = `${room},${checkIn},${checkOut},${guests},${reservation}`;
   const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data + secret));
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 8);
@@ -256,20 +256,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const reservation = document.getElementById("reservation").value.trim() || "";
       const breakfast = document.getElementById("breakfast")?.value.trim() || "";
 
-      let days = "";
-      if (checkIn && checkOut) {
-        const checkInDate = new Date(checkIn);
-        const checkOutDate = new Date(checkOut);
-        if (checkOutDate <= checkInDate) {
-          alert("チェックアウト日はチェックイン日より後に設定してください。");
-          return;
-        }
-        const diffTime = checkOutDate - checkInDate;
-        days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      }
+      // let days = "";
+      // if (checkIn && checkOut) {
+      //   const checkInDate = new Date(checkIn);
+      //   const checkOutDate = new Date(checkOut);
+      //   if (checkOutDate <= checkInDate) {
+      //     alert("チェックアウト日はチェックイン日より後に設定してください。");
+      //     return;
+      //   }
+      //   const diffTime = checkOutDate - checkInDate;
+      //   days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      // }
 
-      const hash = await generateHash(room, checkIn, checkOut, days);
-      const qrText = `${room},${checkIn},${checkOut},${days},${reservation},${hash}`;
+      const hash = await generateHash(room, checkIn, checkOut, guests, reservation);
+      const qrText = `${room},${checkIn},${checkOut},${guests},${reservation},${hash}`;
 
       // ✅ 텍스트 정보 표시
       const textInfo = `Room : ${room}<br>Check-in : ${checkIn}<br>Check-out : ${checkOut}(~10:00)<br>Guests : ${guests}<br>Breakfast : ${breakfast}<br>Booking No : ${reservation}`;
@@ -349,7 +349,7 @@ document.addEventListener("DOMContentLoaded", () => {
               .filter(row => row["ステータス"] !== "キャンセル")
               .map(async row => {
                 const fullReservation = row["booking_no"]?.trim() || row["#予約番号"]?.trim() || "";
-                const reservation = fullReservation.split(/[-_]/)[0];
+                const reservation = fullReservation;
                 let rawRoom = row["room"]?.trim() || row["部屋名"]?.trim() || "";
                 const room = rawRoom.match(/\d{1,3}/)?.[0] || "";
                 const reserver = row["name"]?.trim() || row["予約者"]?.trim() || "";
@@ -372,7 +372,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   : (row["プラン名"]?.toLowerCase().includes("room only") ? 0 : 1);
 
                 const days = checkOut && checkIn ? Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)) : "";
-                const hash = await generateHash(room, checkIn, checkOut, days);
+                const hash = await generateHash(room, checkIn, checkOut, guestCount, reservation);
 
                 let searchName = reserver;
                 if (window.wanakana) {
