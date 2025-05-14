@@ -86,22 +86,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ✅ iOS 키보드가 사라진 후 스크롤 위치 복구
-  document.addEventListener("focusout", () => {
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-      }, 200); // 추가 반복 호출로 iPad 복원 보정
-    }, 100);
+  // ✅ 입력 필드 포커스/포커스아웃 시 스크롤 제어 개선
+  let lastScrollY = 0;
+
+  document.addEventListener("focusin", () => {
+    lastScrollY = window.scrollY;
   });
 
-  // ✅ visualViewport 변화 감지로 iPad 대응
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener("resize", () => {
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-      }, 100);
-    });
-  }
+  document.addEventListener("focusout", () => {
+    setTimeout(() => {
+      // 키보드 내려간 뒤에도 수동 스크롤한 적 없으면 복원
+      if (window.scrollY > lastScrollY + 50) return; // 사용자가 직접 내린 경우 건드리지 않음
+      window.scrollTo({ top: lastScrollY, behavior: "smooth" });
+    }, 200);
+  });
 });
