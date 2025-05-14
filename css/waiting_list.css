@@ -147,7 +147,7 @@ textarea {
   gap: 10px;                      /* small consistent gap */
   margin-top: 10px;
   width: 100%;
-  max-width: 86vw; /* slightly reduced from 88vw */
+  max-width: 85vw; /* slightly reduced from 88vw */
   min-height: 200px;
   max-height: 60vh;
   overflow-y: auto;
@@ -166,7 +166,7 @@ button.dynamic-button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 10px; /* match button-grid button padding */
+  padding: 0 7px; /* match button-grid button padding */
   font-size: 25px;
 }
 
@@ -188,7 +188,7 @@ button.dynamic-button:hover {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 0 10px;             /* reduced from 12px to narrow the button */
+  padding: 0 7px;             /* reduced from 12px to narrow the button */
   display: flex;
   align-items: center;
   justify-content: center;
