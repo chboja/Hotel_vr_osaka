@@ -46,13 +46,15 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("customPromptOverlay").style.display = "flex"; // show modal
   });
 
-  // ✅ Enter 키 입력 시 검색 버튼 클릭 실행
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && document.activeElement &&
-        document.activeElement.id === "qrResult") {
-      e.preventDefault(); // 기본 엔터 동작 막기
-      document.getElementById("searchButton").click(); // 검색 버튼 클릭 실행
-    }
+  // ✅ Enter 키 입력 시 검색 버튼 클릭 실행 (keydown과 keypress 모두 사용하여 iPad 호환성 개선)
+  ["keydown", "keypress"].forEach(eventType => {
+    document.addEventListener(eventType, (e) => {
+      if ((e.key === "Enter" || e.key === "Return") &&
+          document.activeElement?.id === "qrResult") {
+        e.preventDefault();
+        document.getElementById("searchButton").click();
+      }
+    });
   });
 
   // ✅ 입력 외의 영역을 터치하면 키보드 닫기
