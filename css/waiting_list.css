@@ -18,7 +18,7 @@ body {
 .container {
   display: flex;
   flex-direction: row;
-  height: 95%;
+  height: 100vh; /* from 95% to full viewport height */
   overflow: hidden; /* prevent inner scroll */
   gap: 20px;
   padding: 20px;
@@ -49,6 +49,10 @@ body {
   width: 50%;
 }
 
+.scanner-section input {
+  margin-bottom: 10px;
+}
+
 .list-section {
   flex: 1;
   display: flex;
@@ -62,6 +66,11 @@ body {
   margin-top: 20px;
   margin-bottom: 20px;
   width: 50%;
+}
+
+.scanner-section h2,
+.list-section h2 {
+  margin-bottom: 10px;
 }
 
 #reader {
@@ -192,6 +201,16 @@ button.dynamic-button:hover {
 }
 
 @media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .scanner-section,
+  .list-section {
+    width: 100%;
+    margin: 10px 0;
+  }
+
   .list-section #List {
     grid-template-columns: 1fr; /* stack buttons in one column on small screens */
   }

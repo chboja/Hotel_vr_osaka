@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const text = window.currentRoomText || "";
     const button = document.createElement("button");
+    button.classList.add("dynamic-button");
     button.textContent = `${text}号 ${guests}名`;
     button.onclick = () => {
       alert(`"${text}" (${guests}名) ボタンがクリックされました`);
