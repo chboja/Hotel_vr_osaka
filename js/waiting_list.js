@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function onScanSuccess(decodedText, decodedResult) {
     console.log(`✅ QRコードスキャン成功: ${decodedText}`);
     qrResult.value = decodedText;
-    html5QrCode.stop().catch(err => console.error("Failed to stop scanner:", err));
+    // html5QrCode.stop().catch(err => console.error("Failed to stop scanner:", err));
   }
 
   Html5Qrcode.getCameras().then(devices => {
@@ -46,15 +46,17 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("customPromptOverlay").style.display = "flex"; // show modal
   });
 
-  // ✅ Enter 키 입력 시 검색 버튼 클릭 실행 (keydown과 keypress 모두 사용하여 iPad 호환성 개선)
-  ["keydown", "keypress"].forEach(eventType => {
-    document.addEventListener(eventType, (e) => {
-      if ((e.key === "Enter" || e.key === "Return") &&
-          document.activeElement?.id === "qrResult") {
-        e.preventDefault();
-        document.getElementById("searchButton").click();
-      }
-    });
+  // ✅ Enter, Return, Go, Done, Next 키 입력 시 검색 버튼 클릭 실행 (iPad/iOS 키보드 대응)
+  document.addEventListener("keydown", (e) => {
+    console.log("Pressed key:", e.key); // 콘솔에 키 출력
+    if (
+      ["Enter", "Return", "Go", "Done", "Next"].includes(e.key) &&
+      document.activeElement?.id === "qrResult"
+    ) {
+      console.log("🔍 検索ボタンを実行します");
+      e.preventDefault();
+      document.getElementById("searchButton").click();
+    }
   });
 
   // ✅ 입력 외의 영역을 터치하면 키보드 닫기

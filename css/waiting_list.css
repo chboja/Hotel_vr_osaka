@@ -1,7 +1,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  height: 100vh;
+  height: 95vh; /* reduced from 100vh */
   overflow: hidden;
 }
 
@@ -11,14 +11,14 @@ body {
   padding: 0;
   background: #f4f4f4;
   display: block;
-  height: 100vh;
+  height: 95vh; /* reduced from 100vh */
   overflow: hidden; /* prevent scroll */
 }
 
 .container {
   display: flex;
   flex-direction: row;
-  height: 100vh; /* from 95% to full viewport height */
+  height: 95vh; /* reduced from 100vh */
   overflow: hidden; /* prevent inner scroll */
   gap: 20px;
   padding: 20px;
@@ -29,9 +29,9 @@ body {
 
 .scanner-section,
 .list-section {
-  height: 100%;
-  min-height: 0;
-  overflow: hidden;
+  height: auto;
+  max-height: 100%;
+  overflow: auto;
 }
 
 .scanner-section {
