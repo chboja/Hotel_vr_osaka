@@ -193,7 +193,7 @@ button.dynamic-button:hover {
   align-items: center;
   justify-content: center;
 
-  width: 100%; /* fill column space */
+  width: 90%; /* fill column space */
 }
 
 .button-grid button:hover {
