@@ -276,6 +276,21 @@ button.dynamic-button:hover {
 
 #reader {
   width: 100%;
-  max-width: 320px;
+  max-width: 400px;
+  aspect-ratio: 4 / 3;
+  background-color: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 6px rgba(0,0,0,0.3);
   margin: 0 auto 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#reader canvas,
+#reader video {
+  width: 100% !important;
+  height: auto !important;
+  border-radius: 8px;
 }
