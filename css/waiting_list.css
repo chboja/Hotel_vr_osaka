@@ -74,12 +74,13 @@ body {
 }
 
 #reader {
-  width: 250px;
+  width: 320px;
   height: auto;
   aspect-ratio: 4 / 3;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  border: 3px dashed #2e86de;
+  border-radius: 10px;
   margin: 20px auto 50px auto;
+  box-shadow: 0 0 10px rgba(46, 134, 222, 0.5);
 }
 
 #waiting-list {
@@ -146,7 +147,6 @@ textarea {
   gap: 10px;                      /* small consistent gap */
   margin-top: 10px;
   width: 100%;
-  max-width: 78vw; /* slightly reduced from 82vw */
   min-height: 200px;
   max-height: 60vh;
   overflow-y: auto;
@@ -155,10 +155,11 @@ textarea {
   border-radius: 8px;
   grid-auto-rows: 70px; /* ensure consistent row height */
   justify-items: center;
+  overflow-x: hidden;
 }
 /* Ensure consistent button height and better touch usability */
 button.dynamic-button {
-  width: 100%;
+  width: 95%;
   box-sizing: border-box;
   height: 60px;
   white-space: nowrap;
@@ -194,7 +195,7 @@ button.dynamic-button:hover {
   align-items: center;
   justify-content: center;
 
-  width: 100%; /* fill column space */
+  width: 95%; /* fill column space */
   box-sizing: border-box;
 }
 
