@@ -74,13 +74,12 @@ body {
 }
 
 #reader {
-  width: 100%;
+  width: 250px;
   height: auto;
   aspect-ratio: 4 / 3;
   border: 1px solid #ccc;
   border-radius: 6px;
-  margin-top: 20px;
-  margin-bottom: 50px; /* increased spacing */
+  margin: 20px auto 50px auto;
 }
 
 #waiting-list {
@@ -155,6 +154,7 @@ textarea {
   padding: 10px;
   border-radius: 8px;
   grid-auto-rows: 70px; /* ensure consistent row height */
+  justify-items: center;
 }
 /* Ensure consistent button height and better touch usability */
 button.dynamic-button {
