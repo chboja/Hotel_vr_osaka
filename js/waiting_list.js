@@ -18,7 +18,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (devices && devices.length > 0) {
       html5QrCode.start(
         { facingMode: "user" },
-        { fps: 10, qrbox: { width: 250, height: 250 } },
+        {
+          fps: 10,
+          qrbox: function(viewfinderWidth, viewfinderHeight) {
+            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+            const boxSize = Math.floor(minEdge * 0.7);
+            return { width: boxSize, height: boxSize };
+          }
+        },
         onScanSuccess
       ).catch(err => {
         console.error("Camera start error:", err);
