@@ -69,9 +69,13 @@ body {
   overflow-x: hidden;
 }
 
-.scanner-section h2,
+
 .list-section h2 {
   margin-bottom: 75px;
+}
+
+.qr-title {
+  margin-bottom: 10px;
 }
 
 
