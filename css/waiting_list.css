@@ -272,3 +272,10 @@ button.dynamic-button:hover {
 .custom-prompt-buttons button:hover {
   background-color: #1b4f9c;
 }
+
+
+#reader {
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto 20px auto;
+}
