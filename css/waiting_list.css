@@ -66,21 +66,12 @@ body {
   margin-top: 20px;
   margin-bottom: 20px;
   width: 50%;
+  overflow-x: hidden;
 }
 
 .scanner-section h2,
 .list-section h2 {
   margin-bottom: 10px;
-}
-
-#reader {
-  width: 320px;
-  height: auto;
-  aspect-ratio: 4 / 3;
-  border: 3px dashed #2e86de;
-  border-radius: 10px;
-  margin: 20px auto 50px auto;
-  box-shadow: 0 0 10px rgba(46, 134, 222, 0.5);
 }
 
 #waiting-list {
@@ -147,7 +138,7 @@ textarea {
   gap: 10px;                      /* small consistent gap */
   margin-top: 10px;
   width: 100%;
-  min-height: 200px;
+  min-height: 0;
   max-height: 60vh;
   overflow-y: auto;
   background-color: #fcfcfc;
@@ -156,6 +147,11 @@ textarea {
   grid-auto-rows: 70px; /* ensure consistent row height */
   justify-items: center;
   overflow-x: hidden;
+  scrollbar-width: none;         /* Firefox */
+  -ms-overflow-style: none;      /* IE10+ */
+}
+.list-section #List::-webkit-scrollbar {
+  display: none;
 }
 /* Ensure consistent button height and better touch usability */
 button.dynamic-button {
