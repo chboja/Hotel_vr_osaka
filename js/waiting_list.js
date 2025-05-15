@@ -10,7 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function onScanSuccess(decodedText, decodedResult) {
     console.log(`✅ QRコードスキャン成功: ${decodedText}`);
+    const qrResult = document.getElementById("qrResult");
     qrResult.value = decodedText;
+    html5QrCode.stop().catch(err => console.error("Failed to stop scanner:", err));
   }
 
   Html5Qrcode.getCameras().then(devices => {
