@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const qrResult = document.getElementById("qrResult");
     qrResult.value = decodedText;
     html5QrCode.stop().catch(err => console.error("Failed to stop scanner:", err));
+    document.getElementById("searchButton").click();
   }
 
   Html5Qrcode.getCameras().then(devices => {
