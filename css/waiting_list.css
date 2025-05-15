@@ -291,6 +291,6 @@ button.dynamic-button:hover {
 #reader canvas,
 #reader video {
   width: 100% !important;
-  height: auto !important;
+  height: 80% !important;
   border-radius: 8px;
 }
