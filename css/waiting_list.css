@@ -158,7 +158,8 @@ textarea {
 }
 /* Ensure consistent button height and better touch usability */
 button.dynamic-button {
-  width: 80%;
+  width: 100%;
+  box-sizing: border-box;
   height: 60px;
   white-space: nowrap;
   overflow: hidden;
@@ -193,7 +194,8 @@ button.dynamic-button:hover {
   align-items: center;
   justify-content: center;
 
-  width: 80%; /* fill column space */
+  width: 100%; /* fill column space */
+  box-sizing: border-box;
 }
 
 .button-grid button:hover {
